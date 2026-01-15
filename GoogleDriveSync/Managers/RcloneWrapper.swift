@@ -314,7 +314,30 @@ actor RcloneWrapper {
     }
     
     private func parseByteCount(from output: String) -> Int64 {
-        // Parse byte counts - simplified
+        // rclone stats one-line outputs like: "Transferred: 5.459 MiB / 6.622 MiB, 82%, 0 B/s, ETA -"
+        // We look for the part before the first "/"
+        let pattern = #"Transferred:\s+([\d.]+)\s*(\w+)"#
+        if let regex = try? NSRegularExpression(pattern: pattern),
+           let match = regex.firstMatch(in: output, range: NSRange(output.startIndex..., in: output)),
+           let valueRange = Range(match.range(at: 1), in: output),
+           let unitRange = Range(match.range(at: 2), in: output) {
+            
+            let valueStr = String(output[valueRange])
+            let unitStr = String(output[unitRange]).lowercased()
+            
+            if let value = Double(valueStr) {
+                let multiplier: Double
+                switch unitStr {
+                case "b": multiplier = 1
+                case "k", "kib": multiplier = 1024
+                case "m", "mib": multiplier = 1024 * 1024
+                case "g", "gib": multiplier = 1024 * 1024 * 1024
+                case "t", "tib": multiplier = 1024 * 1024 * 1024 * 1024
+                default: multiplier = 1
+                }
+                return Int64(value * multiplier)
+            }
+        }
         return 0
     }
 }

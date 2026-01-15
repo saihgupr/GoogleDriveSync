@@ -239,6 +239,34 @@ class SyncManager: ObservableObject {
         }
     }
     
+    /// Reset all app data and settings
+    func resetAllSettings() {
+        // Clear properties
+        folders.removeAll()
+        availableRemotes.removeAll()
+        
+        // Clear UserDefaults
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        UserDefaults.standard.removeObject(forKey: settingsKey)
+        
+        // Re-initialize settings to defaults
+        let detectedPath = AppSettings.detectRclonePath() ?? AppSettings.defaultRclonePath
+        self.settings = AppSettings(rclonePath: detectedPath)
+        
+        // Update rclone wrapper
+        self.rclone = RcloneWrapper(rclonePath: self.settings.rclonePath)
+        
+        // Save initial state
+        saveSettings()
+        saveFolders()
+        
+        // Refresh remotes
+        Task {
+            await checkRcloneInstallation()
+            await refreshRemotes()
+        }
+    }
+    
     // MARK: - Folder Management
     
     func addFolder(localPath: String, remoteName: String, remotePath: String = "") {

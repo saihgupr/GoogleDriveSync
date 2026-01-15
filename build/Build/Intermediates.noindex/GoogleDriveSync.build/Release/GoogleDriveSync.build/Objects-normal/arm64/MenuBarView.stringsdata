@@ -1,0 +1,152 @@
+{
+  "source": "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/GoogleDriveSync/Views/MenuBarView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "GoogleDriveSync",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel sync",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "rclone is not installed",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Install via Homebrew:",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "Check Again",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "brew install rclone",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 201
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy to clipboard",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 214
+        }
+      },
+      {
+        "comment": "",
+        "key": "No folders configured",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Folder",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "Folders",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync All",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 270
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings...",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 280
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quit GoogleDriveSync",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 292
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Now",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 331
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show in Finder",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 340
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Google Drive",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 344
+        }
+      },
+      {
+        "comment": "",
+        "key": "Remove",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 352
+        }
+      }
+    ]
+  },
+  "version": 1
+}
