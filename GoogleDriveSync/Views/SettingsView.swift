@@ -860,9 +860,7 @@ struct AdvancedSettingsView: View {
                 }
                 
                 Button("Reset All Settings", role: .destructive) {
-                    // TODO: Add confirmation
-                    UserDefaults.standard.removeObject(forKey: "GoogleDriveSync.Folders")
-                    UserDefaults.standard.removeObject(forKey: "GoogleDriveSync.Settings")
+                    showingResetConfirmation = true
                 }
             } header: {
                 Text("Maintenance")
@@ -870,6 +868,14 @@ struct AdvancedSettingsView: View {
         }
         .formStyle(.grouped)
         .padding()
+        .alert("Reset All Settings?", isPresented: $showingResetConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Reset Everything", role: .destructive) {
+                syncManager.resetAllSettings()
+            }
+        } message: {
+            Text("This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.")
+        }
         .onChange(of: syncManager.settings.rclonePath) { _, _ in
             syncManager.saveSettings()
             Task {
@@ -877,6 +883,8 @@ struct AdvancedSettingsView: View {
             }
         }
     }
+    
+    @State private var showingResetConfirmation = false
 }
 
 #Preview {

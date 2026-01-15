@@ -10,6 +10,7 @@ import SwiftUI
 struct MenuBarView: View {
     @EnvironmentObject var syncManager: SyncManager
     @Environment(\.openSettings) private var openSettings
+    @State private var expandedErrorID: UUID? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -128,21 +129,38 @@ struct MenuBarView: View {
             if !foldersWithErrors.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     ForEach(foldersWithErrors) { folder in
-                        HStack(alignment: .top, spacing: 8) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.yellow)
-                                .font(.system(size: 12))
-                            
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(folder.displayName)
-                                    .font(.system(size: 11, weight: .medium))
+                        Button {
+                            if expandedErrorID == folder.id {
+                                expandedErrorID = nil
+                            } else {
+                                expandedErrorID = folder.id
+                            }
+                        } label: {
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.yellow)
+                                    .font(.system(size: 12))
                                 
-                                Text(folder.lastError ?? "Unknown error")
-                                    .font(.system(size: 10))
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(2)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(folder.displayName)
+                                        .font(.system(size: 11, weight: .medium))
+                                    
+                                    Text(folder.lastError ?? "Unknown error")
+                                        .font(.system(size: 10))
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(expandedErrorID == folder.id ? nil : 2)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: expandedErrorID == folder.id ? "chevron.up" : "chevron.down")
+                                    .font(.system(size: 8))
+                                    .foregroundStyle(.tertiary)
+                                    .padding(.top, 2)
                             }
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(10)
