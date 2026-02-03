@@ -311,7 +311,7 @@ class SyncManager: ObservableObject {
             
             if let url = URL(string: urlString) {
                 await MainActor.run {
-                    NSWorkspace.shared.open(url)
+                    _ = NSWorkspace.shared.open(url)
                 }
             }
         } else {
@@ -567,6 +567,7 @@ class SyncManager: ObservableObject {
             if #available(macOS 12.0, *) {
                 content.interruptionLevel = .timeSensitive
             }
+            content.categoryIdentifier = "SYNC_ERROR"
         } else {
             // Success case - only proceed if showNotifications is true
             guard settings.showNotifications else { return }
@@ -601,6 +602,15 @@ class SyncManager: ObservableObject {
             }
         } catch {
             print("Failed to update launch at login: \(error)")
+        }
+    }
+    // MARK: - Updates
+    
+    func checkForUpdates() {
+        // Open the GitHub releases page
+        // Assuming the repo URL based on header info
+        if let url = URL(string: "https://github.com/saihgupr/GoogleDriveSync/releases") {
+            NSWorkspace.shared.open(url)
         }
     }
 }

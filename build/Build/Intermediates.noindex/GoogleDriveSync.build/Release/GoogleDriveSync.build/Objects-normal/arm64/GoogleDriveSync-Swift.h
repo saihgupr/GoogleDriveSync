@@ -279,6 +279,9 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
+@import AppKit;
+@import ObjectiveC;
+@import UserNotifications;
 #endif
 
 #endif
@@ -300,6 +303,18 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 #if defined(__OBJC__)
+
+@class NSNotification;
+@class UNUserNotificationCenter;
+@class UNNotification;
+@class UNNotificationResponse;
+SWIFT_CLASS("_TtC15GoogleDriveSync11AppDelegate")
+@interface AppDelegate : NSObject <NSApplicationDelegate, UNUserNotificationCenterDelegate>
+- (void)applicationDidFinishLaunching:(NSNotification * _Nonnull)notification;
+- (void)userNotificationCenter:(UNUserNotificationCenter * _Nonnull)center willPresentNotification:(UNNotification * _Nonnull)notification withCompletionHandler:(void (^ _Nonnull)(UNNotificationPresentationOptions))completionHandler;
+- (void)userNotificationCenter:(UNUserNotificationCenter * _Nonnull)center didReceiveNotificationResponse:(UNNotificationResponse * _Nonnull)response withCompletionHandler:(void (^ _Nonnull)(void))completionHandler;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 #endif
 #if __has_attribute(external_source_symbol)

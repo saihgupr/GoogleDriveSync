@@ -6,7 +6,7 @@
 	<integer>12</integer>
 	<key>logs</key>
 	<dict>
-		<key>7C2D4049-B60D-43A0-804A-C03BEA2DD67E</key>
+		<key>17CA6C1D-3D88-4660-A731-5CC2B7CEB60A</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,17 +15,17 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>7C2D4049-B60D-43A0-804A-C03BEA2DD67E.xcactivitylog</string>
+			<string>17CA6C1D-3D88-4660-A731-5CC2B7CEB60A.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
 			<dict>
 				<key>highLevelStatus</key>
-				<string>W</string>
+				<string>E</string>
 				<key>totalNumberOfAnalyzerIssues</key>
 				<integer>0</integer>
 				<key>totalNumberOfErrors</key>
-				<integer>0</integer>
+				<integer>14</integer>
 				<key>totalNumberOfTestFailures</key>
 				<integer>0</integer>
 				<key>totalNumberOfWarnings</key>
@@ -40,13 +40,13 @@
 			<key>signature</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>timeStartedRecording</key>
-			<real>790185436.44581497</real>
+			<real>791819762.25910294</real>
 			<key>timeStoppedRecording</key>
-			<real>790185460.065014</real>
+			<real>791819776.45102704</real>
 			<key>title</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>uniqueIdentifier</key>
-			<string>7C2D4049-B60D-43A0-804A-C03BEA2DD67E</string>
+			<string>17CA6C1D-3D88-4660-A731-5CC2B7CEB60A</string>
 		</dict>
 	</dict>
 </dict>
