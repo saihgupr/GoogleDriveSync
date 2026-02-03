@@ -1,0 +1,4 @@
+.git-backup-*
+deploy.sh
+build/
+*.log
