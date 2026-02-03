@@ -2,7 +2,7 @@
 
 **A native macOS menu bar app for seamless Google Drive syncing**
 
-GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Simple, reliable, and living right in your menu bar. No configuration headaches, no external dependencies, just sync your folders and get on with your day.
+GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Simple, reliable, and living right in your menu bar. No complex setup, no external dependencies, just sync your folders and get on with your day.
 
 <p align="center">
   <img src="Images/SCR-20260203-jwxr.jpeg" width="600" /><br>
@@ -152,6 +152,4 @@ MIT License
 
 If you encounter any issues or have feature requests, please open an issue on GitHub.
 
-If you like this project, consider giving it a star ⭐ or making a small donation.
-
-Built with ❤️ for Mac users.
+I decided to make this app open-source and free for everyone to use. If you like this project, consider giving it a star ⭐ or making a donation.
