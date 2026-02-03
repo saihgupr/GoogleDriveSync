@@ -786,7 +786,7 @@ struct GeneralSettingsView: View {
                 
                 if !syncManager.rcloneVersion.isEmpty {
                     HStack {
-                        Text("rclone version")
+                        Text("Rclone Version")
                         Spacer()
                         Text(syncManager.rcloneVersion)
                             .foregroundStyle(.secondary)

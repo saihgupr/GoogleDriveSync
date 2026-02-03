@@ -524,7 +524,7 @@
       },
       {
         "comment": "",
-        "key": "rclone version",
+        "key": "Rclone Version",
         "location": {
           "startingColumn": 30,
           "startingLine": 789
