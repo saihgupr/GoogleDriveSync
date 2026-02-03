@@ -107,8 +107,4 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 
 If you encounter any issues or have feature requests, please [open an issue](https://github.com/saihgupr/GoogleDriveSync/issues) on GitHub.
 
-I decided to make this app open-source and free for everyone to use. If you like this project, consider giving it a star ⭐ or making a donation.
-
----
-
-Built with ❤️ by [Saihgupr](https://github.com/saihgupr) for Mac users.
+I decided to make this app **open-source** and **free** for everyone to use. If you like this project, consider giving it a star ⭐ or making a donation .
