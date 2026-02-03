@@ -3,16 +3,10 @@
 A native macOS menu bar app for syncing local folders with Google Drive.
 
 <p align="center">
-  <table width="100%">
-    <tr>
-      <td width="50%"><img src="Images/SCR-20260203-jwxr.jpeg" width="100%" /></td>
-      <td width="50%"><img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="100%" /></td>
-    </tr>
-    <tr>
-      <td width="50%"><img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="100%" /></td>
-      <td width="50%"><img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="100%" /></td>
-    </tr>
-  </table>
+  <img src="Images/SCR-20260203-jwxr.jpeg" width="600" style="margin-bottom: 20px;" /><br>
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="600" style="margin-bottom: 20px;" /><br>
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="600" style="margin-bottom: 20px;" /><br>
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="600" />
 </p>
 
 ## Features
@@ -34,7 +28,12 @@ A native macOS menu bar app for syncing local folders with Google Drive.
 
 ## Installation
 
-### 1. Build & Run
+### 1. Download
+
+1. Download the latest release from the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases).
+2. Monitor the app for updates (it will auto-check on launch).
+
+### 2. Build from Source (Optional)
 
 1. Open `GoogleDriveSync.xcodeproj` in Xcode.
 2. Build and run (⌘R).
