@@ -142,8 +142,59 @@ struct FolderSettingsRow: View {
     let onEdit: () -> Void
     @EnvironmentObject var syncManager: SyncManager
     
+    @State private var showingErrorPopover = false
+    
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
+            // Status Icon
+            Button {
+                if folder.lastSyncStatus == .error {
+                    showingErrorPopover = true
+                }
+            } label: {
+                Group {
+                    switch folder.lastSyncStatus {
+                    case .idle:
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .foregroundStyle(.tertiary)
+                    case .syncing:
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .foregroundStyle(.blue)
+                    case .success:
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    case .error:
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.red)
+                    }
+                }
+                .font(.system(size: 16))
+                .frame(width: 20)
+            }
+            .buttonStyle(.plain)
+            .popover(isPresented: $showingErrorPopover) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Sync Failed")
+                        .font(.headline)
+                        .foregroundStyle(.red)
+                    
+                    if let error = folder.lastError {
+                        ScrollView {
+                            Text(error)
+                                .font(.caption)
+                                .textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(maxHeight: 200)
+                    } else {
+                        Text("Unknown error occurred.")
+                            .font(.caption)
+                    }
+                }
+                .padding()
+                .frame(width: 300)
+            }
+
             // Folder info (takes available space)
             VStack(alignment: .leading, spacing: 3) {
                 Text(folder.displayName)
@@ -240,10 +291,10 @@ struct AddFolderSheet: View {
                         }
                     }
                     
-                    TextField("Remote Path (optional)", text: $remotePath)
+                    TextField("Destination Folder (optional)", text: $remotePath)
                         .textFieldStyle(.roundedBorder)
                     
-                    Text("e.g., Backups/YAML - leave empty for root")
+                    Text("Leave empty to sync to the root of your Drive.\nOr type a folder path (e.g. 'Backups/MyMac').")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -818,13 +869,7 @@ struct GeneralSettingsView: View {
                 Text("About")
             }
             
-            Section {
-                Button("Reset All Settings", role: .destructive) {
-                    showingResetConfirmation = true
-                }
-            } header: {
-                Text("Danger Zone")
-            }
+
         }
         .formStyle(.grouped)
         .padding()
