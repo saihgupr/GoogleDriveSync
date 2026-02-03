@@ -1,0 +1,12 @@
+{
+  "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/GoogleDriveSync/GoogleDriveSyncApp.swift" : {
+    "abi-baseline-json" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync.abi.json",
+    "const-values" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync-primary.swiftconstvalues",
+    "dependencies" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync-primary.d",
+    "diagnostics" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync-primary.dia",
+    "objc-header" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync-Swift.h",
+    "swiftdoc" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync.swiftdoc",
+    "swiftmodule" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync.swiftmodule",
+    "swiftsourceinfo" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/GoogleDriveSync.build/Release/GoogleDriveSync.build/Objects-normal/arm64/GoogleDriveSync.swiftsourceinfo"
+  }
+}

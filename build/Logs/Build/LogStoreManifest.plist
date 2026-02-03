@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>12</integer>
+	<key>logs</key>
+	<dict>
+		<key>9A457F8F-C214-4359-929D-00223CA80535</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>9A457F8F-C214-4359-929D-00223CA80535.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>7</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>GoogleDriveSync project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>GoogleDriveSync</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>791833972.63036597</real>
+			<key>timeStoppedRecording</key>
+			<real>791833984.95841002</real>
+			<key>title</key>
+			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>9A457F8F-C214-4359-929D-00223CA80535</string>
+		</dict>
+		<key>EA2CE408-FEC4-4418-AC3A-43991CB9E822</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>EA2CE408-FEC4-4418-AC3A-43991CB9E822.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>7</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>GoogleDriveSync project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>GoogleDriveSync</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>791833761.21525002</real>
+			<key>timeStoppedRecording</key>
+			<real>791833774.27959704</real>
+			<key>title</key>
+			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>EA2CE408-FEC4-4418-AC3A-43991CB9E822</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

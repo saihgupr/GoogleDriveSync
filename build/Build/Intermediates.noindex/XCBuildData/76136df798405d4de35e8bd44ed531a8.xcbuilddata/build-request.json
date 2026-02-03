@@ -1,0 +1,66 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildOnly"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "fd48364e39ed2daf2635f1863c48d4eff2881e5af87534ffc60cece62436256b"
+    }
+  ],
+  "containerPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/GoogleDriveSync.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "macosx",
+      "sdk" : "macosx26.2",
+      "sdkVariant" : "macos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Products",
+      "derivedDataPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build",
+      "indexDataStoreFolderPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/build/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "build",
+          "COLOR_DIAGNOSTICS" : "YES",
+          "diagnostic_message_length" : "27",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ONLY_ACTIVE_ARCH" : "YES"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

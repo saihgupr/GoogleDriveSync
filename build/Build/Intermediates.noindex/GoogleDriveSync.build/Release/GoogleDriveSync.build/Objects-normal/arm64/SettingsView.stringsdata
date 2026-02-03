@@ -1,0 +1,624 @@
+{
+  "source": "/Users/chrislapointe/Projects/CurrentProjects/GoogleDriveSync/GoogleDriveSync/Views/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Folders",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accounts",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "General",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 29
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Folders",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add a Google Drive account first",
+        "location": {
+          "startingColumn": 62,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add folder",
+        "location": {
+          "startingColumn": 99,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connect to Google Drive",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sign in with your Google account to start syncing folders.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will open your browser to sign in.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connect Google Drive",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "No Folders",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 104
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add a folder to start syncing to Google Drive",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Folder",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Failed",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unknown error occurred.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Sync Folder",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 271
+        }
+      },
+      {
+        "comment": "",
+        "key": "Local Folder",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 277
+        }
+      },
+      {
+        "comment": "",
+        "key": "Browse...",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 280
+        }
+      },
+      {
+        "comment": "",
+        "key": "Leave empty to sync to the root of your Drive.\nOr type a folder path (e.g. 'Backups/MyMac').",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 297
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Drive Account",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 287
+        }
+      },
+      {
+        "comment": "",
+        "key": "Destination Folder (optional)",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 294
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select...",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 288
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 305
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 312
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit Sync Folder",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 355
+        }
+      },
+      {
+        "comment": "",
+        "key": "Local Folder",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 361
+        }
+      },
+      {
+        "comment": "",
+        "key": "Browse...",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 364
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Drive Account",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 371
+        }
+      },
+      {
+        "comment": "",
+        "key": "Remote Path",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 378
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select...",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 372
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 385
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 392
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connecting to Google Drive...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 466
+        }
+      },
+      {
+        "comment": "",
+        "key": "Complete the sign-in in your browser, then return here.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 472
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 477
+        }
+      },
+      {
+        "comment": "",
+        "key": "Account Connected!",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 486
+        }
+      },
+      {
+        "comment": "",
+        "key": "Give this account a name:",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 491
+        }
+      },
+      {
+        "comment": "",
+        "key": "This helps you identify which Google account this is.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 498
+        }
+      },
+      {
+        "comment": "",
+        "key": "e.g., Work, Personal, john@gmail.com",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 494
+        }
+      },
+      {
+        "comment": "",
+        "key": "Skip",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 510
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 522
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Drive Accounts",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 588
+        }
+      },
+      {
+        "comment": "",
+        "key": "No accounts connected",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 599
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connect Google Drive",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 605
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connected",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 628
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Drive",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 621
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rename...",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 638
+        }
+      },
+      {
+        "comment": "",
+        "key": "Remove Account",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 648
+        }
+      },
+      {
+        "comment": "",
+        "key": "Refresh",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 665
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Another Account",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 660
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rename Account",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 708
+        }
+      },
+      {
+        "comment": "",
+        "key": "Current name: %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 712
+        }
+      },
+      {
+        "comment": "",
+        "key": "New name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 716
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 728
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rename",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 741
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset All Settings?",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 886
+        }
+      },
+      {
+        "comment": "",
+        "key": "Next sync: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 811
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Interval",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 797
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Time",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 806
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync when app launches",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 816
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Schedule",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 818
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show notifications after sync",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 822
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notify on Error",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 824
+        }
+      },
+      {
+        "comment": "",
+        "key": "Launch at login",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 826
+        }
+      },
+      {
+        "comment": "",
+        "key": "App Behavior",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 828
+        }
+      },
+      {
+        "comment": "",
+        "key": "Automatically check for updates",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 832
+        }
+      },
+      {
+        "comment": "",
+        "key": "Check for Updates",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 844
+        }
+      },
+      {
+        "comment": "",
+        "key": "Checking...",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 839
+        }
+      },
+      {
+        "comment": "",
+        "key": "Get Update",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 850
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 854
+        }
+      },
+      {
+        "comment": "",
+        "key": "Version",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 862
+        }
+      },
+      {
+        "comment": "",
+        "key": "v%@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 864
+        }
+      },
+      {
+        "comment": "",
+        "key": "About",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 869
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 887
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset Everything",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 888
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 892
+        }
+      }
+    ]
+  },
+  "version": 1
+}
