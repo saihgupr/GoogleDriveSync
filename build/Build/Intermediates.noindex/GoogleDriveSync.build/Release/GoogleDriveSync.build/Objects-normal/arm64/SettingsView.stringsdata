@@ -28,18 +28,10 @@
       },
       {
         "comment": "",
-        "key": "Advanced",
-        "location": {
-          "startingColumn": 27,
-          "startingLine": 35
-        }
-      },
-      {
-        "comment": "",
         "key": "Sync Folders",
         "location": {
           "startingColumn": 22,
-          "startingLine": 55
+          "startingLine": 49
         }
       },
       {
@@ -47,7 +39,7 @@
         "key": "Add a Google Drive account first",
         "location": {
           "startingColumn": 62,
-          "startingLine": 66
+          "startingLine": 60
         }
       },
       {
@@ -55,7 +47,7 @@
         "key": "Add folder",
         "location": {
           "startingColumn": 99,
-          "startingLine": 66
+          "startingLine": 60
         }
       },
       {
@@ -63,7 +55,7 @@
         "key": "Connect to Google Drive",
         "location": {
           "startingColumn": 30,
-          "startingLine": 79
+          "startingLine": 73
         }
       },
       {
@@ -71,7 +63,7 @@
         "key": "Sign in with your Google account to start syncing folders.",
         "location": {
           "startingColumn": 30,
-          "startingLine": 83
+          "startingLine": 77
         }
       },
       {
@@ -79,7 +71,7 @@
         "key": "This will open your browser to sign in.",
         "location": {
           "startingColumn": 30,
-          "startingLine": 100
+          "startingLine": 94
         }
       },
       {
@@ -87,7 +79,7 @@
         "key": "Connect Google Drive",
         "location": {
           "startingColumn": 35,
-          "startingLine": 92
+          "startingLine": 86
         }
       },
       {
@@ -95,7 +87,7 @@
         "key": "No Folders",
         "location": {
           "startingColumn": 31,
-          "startingLine": 110
+          "startingLine": 104
         }
       },
       {
@@ -103,7 +95,7 @@
         "key": "Add a folder to start syncing to Google Drive",
         "location": {
           "startingColumn": 30,
-          "startingLine": 112
+          "startingLine": 106
         }
       },
       {
@@ -111,7 +103,7 @@
         "key": "Add Folder",
         "location": {
           "startingColumn": 32,
-          "startingLine": 114
+          "startingLine": 108
         }
       },
       {
@@ -119,7 +111,7 @@
         "key": "",
         "location": {
           "startingColumn": 24,
-          "startingLine": 181
+          "startingLine": 175
         }
       },
       {
@@ -127,7 +119,7 @@
         "key": "Add Sync Folder",
         "location": {
           "startingColumn": 18,
-          "startingLine": 231
+          "startingLine": 225
         }
       },
       {
@@ -135,7 +127,7 @@
         "key": "Local Folder",
         "location": {
           "startingColumn": 35,
-          "startingLine": 237
+          "startingLine": 231
         }
       },
       {
@@ -143,7 +135,7 @@
         "key": "Browse...",
         "location": {
           "startingColumn": 32,
-          "startingLine": 240
+          "startingLine": 234
         }
       },
       {
@@ -151,7 +143,7 @@
         "key": "e.g., Backups/YAML - leave empty for root",
         "location": {
           "startingColumn": 26,
-          "startingLine": 257
+          "startingLine": 251
         }
       },
       {
@@ -159,7 +151,7 @@
         "key": "Google Drive Account",
         "location": {
           "startingColumn": 28,
-          "startingLine": 247
+          "startingLine": 241
         }
       },
       {
@@ -167,7 +159,7 @@
         "key": "Remote Path (optional)",
         "location": {
           "startingColumn": 31,
-          "startingLine": 254
+          "startingLine": 248
         }
       },
       {
@@ -175,7 +167,7 @@
         "key": "Select...",
         "location": {
           "startingColumn": 30,
-          "startingLine": 248
+          "startingLine": 242
         }
       },
       {
@@ -183,7 +175,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 24,
-          "startingLine": 265
+          "startingLine": 259
         }
       },
       {
@@ -191,7 +183,7 @@
         "key": "Add",
         "location": {
           "startingColumn": 24,
-          "startingLine": 272
+          "startingLine": 266
         }
       },
       {
@@ -199,7 +191,7 @@
         "key": "Edit Sync Folder",
         "location": {
           "startingColumn": 18,
-          "startingLine": 315
+          "startingLine": 309
         }
       },
       {
@@ -207,7 +199,7 @@
         "key": "Local Folder",
         "location": {
           "startingColumn": 35,
-          "startingLine": 321
+          "startingLine": 315
         }
       },
       {
@@ -215,7 +207,7 @@
         "key": "Browse...",
         "location": {
           "startingColumn": 32,
-          "startingLine": 324
+          "startingLine": 318
         }
       },
       {
@@ -223,7 +215,7 @@
         "key": "Google Drive Account",
         "location": {
           "startingColumn": 28,
-          "startingLine": 331
+          "startingLine": 325
         }
       },
       {
@@ -231,7 +223,7 @@
         "key": "Remote Path",
         "location": {
           "startingColumn": 31,
-          "startingLine": 338
+          "startingLine": 332
         }
       },
       {
@@ -239,7 +231,7 @@
         "key": "Select...",
         "location": {
           "startingColumn": 30,
-          "startingLine": 332
+          "startingLine": 326
         }
       },
       {
@@ -247,7 +239,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 24,
-          "startingLine": 345
+          "startingLine": 339
         }
       },
       {
@@ -255,7 +247,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 24,
-          "startingLine": 352
+          "startingLine": 346
         }
       },
       {
@@ -263,7 +255,7 @@
         "key": "Connecting to Google Drive...",
         "location": {
           "startingColumn": 18,
-          "startingLine": 426
+          "startingLine": 420
         }
       },
       {
@@ -271,7 +263,7 @@
         "key": "Complete the sign-in in your browser, then return here.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 432
+          "startingLine": 426
         }
       },
       {
@@ -279,7 +271,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 20,
-          "startingLine": 437
+          "startingLine": 431
         }
       },
       {
@@ -287,7 +279,7 @@
         "key": "Account Connected!",
         "location": {
           "startingColumn": 18,
-          "startingLine": 446
+          "startingLine": 440
         }
       },
       {
@@ -295,7 +287,7 @@
         "key": "Give this account a name:",
         "location": {
           "startingColumn": 22,
-          "startingLine": 451
+          "startingLine": 445
         }
       },
       {
@@ -303,7 +295,7 @@
         "key": "This helps you identify which Google account this is.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 458
+          "startingLine": 452
         }
       },
       {
@@ -311,7 +303,7 @@
         "key": "e.g., Work, Personal, john@gmail.com",
         "location": {
           "startingColumn": 27,
-          "startingLine": 454
+          "startingLine": 448
         }
       },
       {
@@ -319,7 +311,7 @@
         "key": "Skip",
         "location": {
           "startingColumn": 24,
-          "startingLine": 470
+          "startingLine": 464
         }
       },
       {
@@ -327,7 +319,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 30,
-          "startingLine": 482
+          "startingLine": 476
         }
       },
       {
@@ -335,7 +327,7 @@
         "key": "Google Drive Accounts",
         "location": {
           "startingColumn": 18,
-          "startingLine": 548
+          "startingLine": 542
         }
       },
       {
@@ -343,7 +335,7 @@
         "key": "No accounts connected",
         "location": {
           "startingColumn": 26,
-          "startingLine": 559
+          "startingLine": 553
         }
       },
       {
@@ -351,7 +343,7 @@
         "key": "Connect Google Drive",
         "location": {
           "startingColumn": 31,
-          "startingLine": 565
+          "startingLine": 559
         }
       },
       {
@@ -359,7 +351,7 @@
         "key": "Connected",
         "location": {
           "startingColumn": 30,
-          "startingLine": 588
+          "startingLine": 582
         }
       },
       {
@@ -367,7 +359,7 @@
         "key": "Google Drive",
         "location": {
           "startingColumn": 34,
-          "startingLine": 581
+          "startingLine": 575
         }
       },
       {
@@ -375,7 +367,7 @@
         "key": "Rename...",
         "location": {
           "startingColumn": 35,
-          "startingLine": 598
+          "startingLine": 592
         }
       },
       {
@@ -383,7 +375,7 @@
         "key": "Remove Account",
         "location": {
           "startingColumn": 35,
-          "startingLine": 608
+          "startingLine": 602
         }
       },
       {
@@ -391,7 +383,7 @@
         "key": "Refresh",
         "location": {
           "startingColumn": 28,
-          "startingLine": 625
+          "startingLine": 619
         }
       },
       {
@@ -399,7 +391,7 @@
         "key": "Add Another Account",
         "location": {
           "startingColumn": 31,
-          "startingLine": 620
+          "startingLine": 614
         }
       },
       {
@@ -407,7 +399,7 @@
         "key": "Rename Account",
         "location": {
           "startingColumn": 18,
-          "startingLine": 668
+          "startingLine": 662
         }
       },
       {
@@ -415,7 +407,7 @@
         "key": "Current name: %@",
         "location": {
           "startingColumn": 22,
-          "startingLine": 672
+          "startingLine": 666
         }
       },
       {
@@ -423,7 +415,7 @@
         "key": "New name",
         "location": {
           "startingColumn": 27,
-          "startingLine": 676
+          "startingLine": 670
         }
       },
       {
@@ -431,7 +423,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 24,
-          "startingLine": 688
+          "startingLine": 682
         }
       },
       {
@@ -439,151 +431,7 @@
         "key": "Rename",
         "location": {
           "startingColumn": 30,
-          "startingLine": 701
-        }
-      },
-      {
-        "comment": "",
-        "key": "Next sync: %@",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 768
-        }
-      },
-      {
-        "comment": "",
-        "key": "Sync Interval",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 754
-        }
-      },
-      {
-        "comment": "",
-        "key": "Sync Time",
-        "location": {
-          "startingColumn": 25,
-          "startingLine": 763
-        }
-      },
-      {
-        "comment": "",
-        "key": "Sync when app launches",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 773
-        }
-      },
-      {
-        "comment": "",
-        "key": "Sync Schedule",
-        "location": {
-          "startingColumn": 22,
-          "startingLine": 775
-        }
-      },
-      {
-        "comment": "",
-        "key": "Show notifications after sync",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 779
-        }
-      },
-      {
-        "comment": "",
-        "key": "Notify on Error",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 781
-        }
-      },
-      {
-        "comment": "",
-        "key": "Launch at login",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 783
-        }
-      },
-      {
-        "comment": "",
-        "key": "App Behavior",
-        "location": {
-          "startingColumn": 22,
-          "startingLine": 785
-        }
-      },
-      {
-        "comment": "",
-        "key": "Automatically check for updates",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 789
-        }
-      },
-      {
-        "comment": "",
-        "key": "Check for Updates",
-        "location": {
-          "startingColumn": 30,
-          "startingLine": 801
-        }
-      },
-      {
-        "comment": "",
-        "key": "Checking...",
-        "location": {
-          "startingColumn": 34,
-          "startingLine": 796
-        }
-      },
-      {
-        "comment": "",
-        "key": "Get Update",
-        "location": {
-          "startingColumn": 32,
-          "startingLine": 807
-        }
-      },
-      {
-        "comment": "",
-        "key": "OK",
-        "location": {
-          "startingColumn": 28,
-          "startingLine": 811
-        }
-      },
-      {
-        "comment": "",
-        "key": "Rclone Version",
-        "location": {
-          "startingColumn": 30,
-          "startingLine": 818
-        }
-      },
-      {
-        "comment": "",
-        "key": "Version",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 826
-        }
-      },
-      {
-        "comment": "",
-        "key": "v%@",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 828
-        }
-      },
-      {
-        "comment": "",
-        "key": "About",
-        "location": {
-          "startingColumn": 22,
-          "startingLine": 833
+          "startingLine": 695
         }
       },
       {
@@ -591,7 +439,159 @@
         "key": "Reset All Settings?",
         "location": {
           "startingColumn": 16,
-          "startingLine": 949
+          "startingLine": 891
+        }
+      },
+      {
+        "comment": "",
+        "key": "Next sync: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 765
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Interval",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 751
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Time",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 760
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync when app launches",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 770
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync Schedule",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 772
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show notifications after sync",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 776
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notify on Error",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 778
+        }
+      },
+      {
+        "comment": "",
+        "key": "Launch at login",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 780
+        }
+      },
+      {
+        "comment": "",
+        "key": "App Behavior",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 782
+        }
+      },
+      {
+        "comment": "",
+        "key": "Automatically check for updates",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 786
+        }
+      },
+      {
+        "comment": "",
+        "key": "Check for Updates",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 798
+        }
+      },
+      {
+        "comment": "",
+        "key": "Checking...",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 793
+        }
+      },
+      {
+        "comment": "",
+        "key": "Get Update",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 804
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 808
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rclone Version",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 815
+        }
+      },
+      {
+        "comment": "",
+        "key": "Version",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 823
+        }
+      },
+      {
+        "comment": "",
+        "key": "v%@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 825
+        }
+      },
+      {
+        "comment": "",
+        "key": "About",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 830
+        }
+      },
+      {
+        "comment": "",
+        "key": "Verify rclone Installation",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 861
         }
       },
       {
@@ -599,7 +599,7 @@
         "key": "rclone Path",
         "location": {
           "startingColumn": 31,
-          "startingLine": 903
+          "startingLine": 835
         }
       },
       {
@@ -607,7 +607,7 @@
         "key": "Detect",
         "location": {
           "startingColumn": 28,
-          "startingLine": 906
+          "startingLine": 838
         }
       },
       {
@@ -615,7 +615,7 @@
         "key": "rclone found: %@",
         "location": {
           "startingColumn": 30,
-          "startingLine": 917
+          "startingLine": 849
         }
       },
       {
@@ -623,23 +623,15 @@
         "key": "rclone not found at this path",
         "location": {
           "startingColumn": 30,
-          "startingLine": 924
+          "startingLine": 856
         }
       },
       {
         "comment": "",
-        "key": "rclone Configuration",
+        "key": "Advanced Configuration",
         "location": {
           "startingColumn": 22,
-          "startingLine": 929
-        }
-      },
-      {
-        "comment": "",
-        "key": "Check for Updates",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 933
+          "startingLine": 868
         }
       },
       {
@@ -647,15 +639,15 @@
         "key": "Reset All Settings",
         "location": {
           "startingColumn": 24,
-          "startingLine": 940
+          "startingLine": 872
         }
       },
       {
         "comment": "",
-        "key": "Maintenance",
+        "key": "Danger Zone",
         "location": {
           "startingColumn": 22,
-          "startingLine": 944
+          "startingLine": 876
         }
       },
       {
@@ -663,7 +655,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 20,
-          "startingLine": 950
+          "startingLine": 892
         }
       },
       {
@@ -671,7 +663,7 @@
         "key": "Reset Everything",
         "location": {
           "startingColumn": 20,
-          "startingLine": 951
+          "startingLine": 893
         }
       },
       {
@@ -679,7 +671,7 @@
         "key": "This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 955
+          "startingLine": 897
         }
       }
     ]

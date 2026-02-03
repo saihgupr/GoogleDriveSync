@@ -29,12 +29,6 @@ struct SettingsView: View {
                     Label("General", systemImage: "gear")
                 }
                 .environmentObject(syncManager)
-            
-            AdvancedSettingsView()
-                .tabItem {
-                    Label("Advanced", systemImage: "wrench.and.screwdriver")
-                }
-                .environmentObject(syncManager)
         }
         .frame(width: 500, height: 400)
     }
@@ -748,6 +742,9 @@ struct GeneralSettingsView: View {
     @State private var updateAlertMessage = ""
     @State private var updateURL: URL?
     
+    // Advanced / Reset state
+    @State private var showingResetConfirmation = false
+    
     var body: some View {
         Form {
             Section {
@@ -832,11 +829,72 @@ struct GeneralSettingsView: View {
             } header: {
                 Text("About")
             }
+            
+            Section {
+                HStack {
+                    TextField("rclone Path", text: $syncManager.settings.rclonePath)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    Button("Detect") {
+                        if let path = AppSettings.detectRclonePath() {
+                            syncManager.settings.rclonePath = path
+                        }
+                    }
+                }
+                
+                if syncManager.isRcloneInstalled {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("rclone found: \(syncManager.rcloneVersion)")
+                            .font(.caption)
+                    }
+                } else {
+                    HStack {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                        Text("rclone not found at this path")
+                            .font(.caption)
+                    }
+                }
+                
+                Button("Verify rclone Installation") {
+                    Task {
+                        await syncManager.checkRcloneInstallation()
+                        await syncManager.refreshRemotes()
+                    }
+                }
+            } header: {
+                Text("Advanced Configuration")
+            }
+            
+            Section {
+                Button("Reset All Settings", role: .destructive) {
+                    showingResetConfirmation = true
+                }
+            } header: {
+                Text("Danger Zone")
+            }
         }
         .formStyle(.grouped)
         .padding()
         .onChange(of: syncManager.settings) { _, _ in
             syncManager.saveSettings()
+        }
+        .onChange(of: syncManager.settings.rclonePath) { _, _ in
+            // When path changes, save and re-check
+            syncManager.saveSettings()
+            Task {
+                await syncManager.checkRcloneInstallation()
+            }
+        }
+        .alert("Reset All Settings?", isPresented: $showingResetConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Reset Everything", role: .destructive) {
+                syncManager.resetAllSettings()
+            }
+        } message: {
+            Text("This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.")
         }
     }
     
@@ -891,79 +949,7 @@ struct GeneralSettingsView: View {
     }
 }
 
-// MARK: - Advanced Tab
 
-struct AdvancedSettingsView: View {
-    @EnvironmentObject var syncManager: SyncManager
-    
-    var body: some View {
-        Form {
-            Section {
-                HStack {
-                    TextField("rclone Path", text: $syncManager.settings.rclonePath)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    Button("Detect") {
-                        if let path = AppSettings.detectRclonePath() {
-                            syncManager.settings.rclonePath = path
-                        }
-                    }
-                }
-                
-                if syncManager.isRcloneInstalled {
-                    HStack {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
-                        Text("rclone found: \(syncManager.rcloneVersion)")
-                            .font(.caption)
-                    }
-                } else {
-                    HStack {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.red)
-                        Text("rclone not found at this path")
-                            .font(.caption)
-                    }
-                }
-            } header: {
-                Text("rclone Configuration")
-            }
-            
-            Section {
-                Button("Check for Updates") {
-                    Task {
-                        await syncManager.checkRcloneInstallation()
-                        await syncManager.refreshRemotes()
-                    }
-                }
-                
-                Button("Reset All Settings", role: .destructive) {
-                    showingResetConfirmation = true
-                }
-            } header: {
-                Text("Maintenance")
-            }
-        }
-        .formStyle(.grouped)
-        .padding()
-        .alert("Reset All Settings?", isPresented: $showingResetConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Reset Everything", role: .destructive) {
-                syncManager.resetAllSettings()
-            }
-        } message: {
-            Text("This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.")
-        }
-        .onChange(of: syncManager.settings.rclonePath) { _, _ in
-            syncManager.saveSettings()
-            Task {
-                await syncManager.checkRcloneInstallation()
-            }
-        }
-    }
-    
-    @State private var showingResetConfirmation = false
-}
 
 #Preview {
     SettingsView()
