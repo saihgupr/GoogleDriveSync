@@ -11,32 +11,41 @@ struct SettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
     
     var body: some View {
-        TabView {
-            FoldersSettingsView()
-                .tabItem {
-                    Label("Folders", systemImage: "folder")
-                }
-                .environmentObject(syncManager)
+        VStack(spacing: 0) {
+            TabView {
+                FoldersSettingsView()
+                    .tabItem {
+                        Label("Folders", systemImage: "folder")
+                    }
+                    .environmentObject(syncManager)
+                
+                AccountsSettingsView()
+                    .tabItem {
+                        Label("Accounts", systemImage: "person.crop.circle")
+                    }
+                    .environmentObject(syncManager)
+                
+                GeneralSettingsView()
+                    .tabItem {
+                        Label("General", systemImage: "gear")
+                    }
+                    .environmentObject(syncManager)
+                
+                AdvancedSettingsView()
+                    .tabItem {
+                        Label("Advanced", systemImage: "wrench.and.screwdriver")
+                    }
+                    .environmentObject(syncManager)
+            }
             
-            AccountsSettingsView()
-                .tabItem {
-                    Label("Accounts", systemImage: "person.crop.circle")
-                }
-                .environmentObject(syncManager)
+            Divider()
             
-            GeneralSettingsView()
-                .tabItem {
-                    Label("General", systemImage: "gear")
-                }
-                .environmentObject(syncManager)
-            
-            AdvancedSettingsView()
-                .tabItem {
-                    Label("Advanced", systemImage: "wrench.and.screwdriver")
-                }
-                .environmentObject(syncManager)
+            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .padding(.vertical, 8)
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 500, height: 420)
     }
 }
 
@@ -777,6 +786,24 @@ struct GeneralSettingsView: View {
                 Toggle("Launch at login", isOn: $syncManager.settings.launchAtLogin)
             } header: {
                 Text("App Behavior")
+            }
+            
+            Section {
+                Button("Check for Updates") {
+                    syncManager.checkForUpdates()
+                }
+                
+                if !syncManager.rcloneVersion.isEmpty {
+                    HStack {
+                        Text("rclone version")
+                        Spacer()
+                        Text(syncManager.rcloneVersion)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+            } header: {
+                Text("About")
             }
         }
         .formStyle(.grouped)
