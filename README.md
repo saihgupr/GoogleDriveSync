@@ -101,10 +101,6 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 
 **Automatic Syncing**: Set up automatic sync intervals in Settings. Choose from 15 min, 30 min, 1 hour, 4 hours, or daily. Or keep it manual if you prefer.
 
-## License
-
-MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Support & Feedback
 
 If you encounter any issues or have feature requests, please [open an issue](https://github.com/saihgupr/GoogleDriveSync/issues) on GitHub.
