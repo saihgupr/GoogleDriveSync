@@ -2,6 +2,13 @@
 
 A native macOS menu bar app for syncing local folders with Google Drive using rclone.
 
+<p align="center">
+  <img src="Images/SCR-20260203-jwxr.jpeg" width="220" style="margin: 5px;" />
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="220" style="margin: 5px;" />
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="220" style="margin: 5px;" />
+  <img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="220" style="margin: 5px;" />
+</p>
+
 ## Features
 
 - **Menu Bar Integration** - Lives in your menu bar for quick access

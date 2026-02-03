@@ -6,7 +6,7 @@
 	<integer>12</integer>
 	<key>logs</key>
 	<dict>
-		<key>4614872E-C552-4C5C-8C90-7FA7748FC3A4</key>
+		<key>4B7D7AA2-8AB5-4CC1-B7D0-529F4E7B8420</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>4614872E-C552-4C5C-8C90-7FA7748FC3A4.xcactivitylog</string>
+			<string>4B7D7AA2-8AB5-4CC1-B7D0-529F4E7B8420.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -40,15 +40,15 @@
 			<key>signature</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>timeStartedRecording</key>
-			<real>791824854.74386096</real>
+			<real>791826034.48069596</real>
 			<key>timeStoppedRecording</key>
-			<real>791824864.47904396</real>
+			<real>791826041.59496903</real>
 			<key>title</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>uniqueIdentifier</key>
-			<string>4614872E-C552-4C5C-8C90-7FA7748FC3A4</string>
+			<string>4B7D7AA2-8AB5-4CC1-B7D0-529F4E7B8420</string>
 		</dict>
-		<key>AA04E25B-EA26-453B-91F2-1E8F3D54A180</key>
+		<key>888CB577-1AE2-4CBA-8C57-1D6376409ECD</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -57,7 +57,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>AA04E25B-EA26-453B-91F2-1E8F3D54A180.xcactivitylog</string>
+			<string>888CB577-1AE2-4CBA-8C57-1D6376409ECD.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -82,13 +82,13 @@
 			<key>signature</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>timeStartedRecording</key>
-			<real>791824116.62992501</real>
+			<real>791825554.94008803</real>
 			<key>timeStoppedRecording</key>
-			<real>791824123.435022</real>
+			<real>791825564.86673295</real>
 			<key>title</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>uniqueIdentifier</key>
-			<string>AA04E25B-EA26-453B-91F2-1E8F3D54A180</string>
+			<string>888CB577-1AE2-4CBA-8C57-1D6376409ECD</string>
 		</dict>
 	</dict>
 </dict>
