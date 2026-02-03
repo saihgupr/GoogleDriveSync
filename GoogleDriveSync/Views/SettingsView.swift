@@ -11,41 +11,32 @@ struct SettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
     
     var body: some View {
-        VStack(spacing: 0) {
-            TabView {
-                FoldersSettingsView()
-                    .tabItem {
-                        Label("Folders", systemImage: "folder")
-                    }
-                    .environmentObject(syncManager)
-                
-                AccountsSettingsView()
-                    .tabItem {
-                        Label("Accounts", systemImage: "person.crop.circle")
-                    }
-                    .environmentObject(syncManager)
-                
-                GeneralSettingsView()
-                    .tabItem {
-                        Label("General", systemImage: "gear")
-                    }
-                    .environmentObject(syncManager)
-                
-                AdvancedSettingsView()
-                    .tabItem {
-                        Label("Advanced", systemImage: "wrench.and.screwdriver")
-                    }
-                    .environmentObject(syncManager)
-            }
+        TabView {
+            FoldersSettingsView()
+                .tabItem {
+                    Label("Folders", systemImage: "folder")
+                }
+                .environmentObject(syncManager)
             
-            Divider()
+            AccountsSettingsView()
+                .tabItem {
+                    Label("Accounts", systemImage: "person.crop.circle")
+                }
+                .environmentObject(syncManager)
             
-            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-                .padding(.vertical, 8)
+            GeneralSettingsView()
+                .tabItem {
+                    Label("General", systemImage: "gear")
+                }
+                .environmentObject(syncManager)
+            
+            AdvancedSettingsView()
+                .tabItem {
+                    Label("Advanced", systemImage: "wrench.and.screwdriver")
+                }
+                .environmentObject(syncManager)
         }
-        .frame(width: 500, height: 420)
+        .frame(width: 500, height: 400)
     }
 }
 
@@ -800,6 +791,13 @@ struct GeneralSettingsView: View {
                         Text(syncManager.rcloneVersion)
                             .foregroundStyle(.secondary)
                     }
+                }
+                
+                HStack {
+                    Text("Version")
+                    Spacer()
+                    Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                        .foregroundStyle(.secondary)
                 }
                 
             } header: {
