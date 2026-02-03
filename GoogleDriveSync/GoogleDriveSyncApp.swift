@@ -46,6 +46,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         )
         
         UNUserNotificationCenter.current().setNotificationCategories([errorCategory])
+        
+        // Request authorization
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Notification permission error: \(error)")
+            } else {
+                print("Notification permission granted: \(granted)")
+            }
+        }
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
