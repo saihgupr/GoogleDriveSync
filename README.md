@@ -3,79 +3,80 @@
 A native macOS menu bar app for syncing local folders with Google Drive using rclone.
 
 <p align="center">
-  <img src="Images/SCR-20260203-jwxr.jpeg" width="220" style="margin: 5px;" />
-  <img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="220" style="margin: 5px;" />
-  <img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="220" style="margin: 5px;" />
-  <img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="220" style="margin: 5px;" />
+  <table>
+    <tr>
+      <td><img src="Images/SCR-20260203-jwxr.jpeg" width="300" /></td>
+      <td><img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="300" /></td>
+    </tr>
+    <tr>
+      <td><img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="300" /></td>
+      <td><img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="300" /></td>
+    </tr>
+  </table>
 </p>
 
 ## Features
 
-- **Menu Bar Integration** - Lives in your menu bar for quick access
-- **Multiple Folder Sync** - Sync as many local folders to Google Drive as you want
-- **Multiple Google Accounts** - Works with multiple rclone-configured Google Drive remotes
-- **Automatic Sync** - Configurable sync intervals (manual, 15min, 30min, 1hr, 4hr, daily)
-- **Progress Tracking** - Real-time sync progress with percentage and ETA
-- **Quick Actions** - Sync individual folders, open in Finder, or open in Google Drive
+- **Zero-Dependency Setup** - Comes with `rclone` bundled, no manual installation needed.
+- **Menu Bar Integration** - Lives in your menu bar for quick access.
+- **Multiple Folder Sync** - Sync as many local folders to Google Drive as you want.
+- **Smart Path Resolution** - Automatically handles macOS mount point changes (e.g., finding `/Volumes/Drive-1` if `/Volumes/Drive` is stuck).
+- **Multiple Google Accounts** - Works with multiple rclone-configured Google Drive remotes.
+- **Automatic Sync** - Configurable sync intervals (manual, 15min, 30min, 1hr, 4hr, daily).
+- **Auto-Update** - Automatically checks for new releases on launch.
+- **Detailed Error Reporting** - Inspect sync errors directly from the UI.
 
 ## Requirements
 
 - macOS 14.0 or later
-- [rclone](https://rclone.org/) (Bundled with the app, no separate installation required)
-- Configured Google Drive remote
+- Configured Google Drive remote (via bundled or system rclone)
 
 ## Installation
 
-### Configure Google Drive Remote
+### 1. Build & Run
 
-Since rclone is bundled, you can configure your remote using your system's rclone or the bundled one. The app will respect existing `rclone.conf` files (usually in `~/.config/rclone/rclone.conf`).
+1. Open `GoogleDriveSync.xcodeproj` in Xcode.
+2. Build and run (⌘R).
+3. The app will launch in your menu bar.
 
-If you don't have a remote configured yet, you can do so via terminal:
+### 2. Configure Google Drive Remote
+
+The app uses `rclone` under the hood. If you haven't set up a Google Drive remote yet, you can do so easily. The app respects your existing `~/.config/rclone/rclone.conf`.
+
+If you need to create a new config:
 
 ```bash
-# If you have rclone installed via brew
+# You can use your system rclone or the one inside the app bundle
 rclone config
-
 ```
 
 Follow the prompts to:
-1. Create a new remote (choose `n`)
-2. Name it (e.g., `your-email@gmail.com`)
-3. Select Google Drive as the storage type
-4. Complete the OAuth authentication
-
-### Build & Run
-
-1. Open `GoogleDriveSync.xcodeproj` in Xcode
-2. Build and run (⌘R)
+1. Create a new remote (choose `n`).
+2. Name it (e.g., `personal-drive`).
+3. Select `drive` (Google Drive) as the storage type.
+4. Complete the browser authentication.
 
 ## Usage
 
-1. Click the cloud icon in your menu bar
-2. Go to **Settings** to add folders to sync
-3. Click **Add Folder** and select:
-   - Local folder to sync
-   - Google Drive remote (from rclone config)
-   - Remote path on Google Drive
-4. Click **Sync All** or use the dropdown menu on individual folders
+1. Click the cloud icon in your menu bar.
+2. Go to **Settings** -> **Add Folder**.
+3. **Select Local Folder**: Choose the folder on your Mac you want to upload.
+4. **Select Account**: Choose your Google Drive remote.
+5. **Destination Folder**:
+   - Leave empty to sync to the root of your Drive.
+   - Or type a folder name (e.g., `Backups/Mac`) to keep things organized.
+6. Click **Add**.
 
-### Folder Actions
+### Syncing
 
-Click the `⌄` dropdown on any folder row to:
-- **Sync Now** - Sync this folder immediately
-- **Show in Finder** - Open the local folder
-- **Open in Google Drive** - Open the folder in your browser
-- **Remove** - Remove the folder from sync list
+- **Sync All**: Runs sync for all configured folders.
+- **Individual Sync**: Click the `⌄` dropdown on any folder and select **Sync Now**.
+- **Progress**: Real-time progress and speed stats are shown in the menu.
 
-## How It Works
+### Troubleshooting
 
-GoogleDriveSync wraps rclone's `sync` command to provide a native macOS experience:
-
-```
-rclone sync /local/path remote:path --progress
-```
-
-Sync direction is **local → Google Drive** (one-way upload sync).
+- **Red Triangle Icon**: If a sync fails, click the red warning icon in Settings to see the exact error message from rclone.
+- **Smart Paths**: If you are syncing an external drive and it gets remounted as `Drive-1`, the app will automatically find it and continue syncing without error.
 
 ## License
 
