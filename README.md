@@ -101,7 +101,7 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 
 ## License
 
-MIT License © 2026 Saihgupr
+MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support & Feedback
 
