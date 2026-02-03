@@ -831,44 +831,6 @@ struct GeneralSettingsView: View {
             }
             
             Section {
-                HStack {
-                    TextField("rclone Path", text: $syncManager.settings.rclonePath)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    Button("Detect") {
-                        if let path = AppSettings.detectRclonePath() {
-                            syncManager.settings.rclonePath = path
-                        }
-                    }
-                }
-                
-                if syncManager.isRcloneInstalled {
-                    HStack {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
-                        Text("rclone found: \(syncManager.rcloneVersion)")
-                            .font(.caption)
-                    }
-                } else {
-                    HStack {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.red)
-                        Text("rclone not found at this path")
-                            .font(.caption)
-                    }
-                }
-                
-                Button("Verify rclone Installation") {
-                    Task {
-                        await syncManager.checkRcloneInstallation()
-                        await syncManager.refreshRemotes()
-                    }
-                }
-            } header: {
-                Text("Advanced Configuration")
-            }
-            
-            Section {
                 Button("Reset All Settings", role: .destructive) {
                     showingResetConfirmation = true
                 }
