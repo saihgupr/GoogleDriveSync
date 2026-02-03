@@ -84,9 +84,13 @@ struct AppSettings: Codable, Equatable {
     }
     
     static func detectRclonePath() -> String? {
-        // Check common locations
+        // 1. Check for bundled rclone (Preferred)
+        if let bundledPath = Bundle.main.path(forResource: "rclone", ofType: nil) {
+            return bundledPath
+        }
+        
+        // 2. Check common system locations
         let paths = [
-            defaultRclonePath,      // Apple Silicon Homebrew
             intelRclonePath,        // Intel Homebrew
             "/usr/bin/rclone",      // System
             "/opt/local/bin/rclone" // MacPorts
