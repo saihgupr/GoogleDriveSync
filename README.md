@@ -14,20 +14,21 @@ A native macOS menu bar app for syncing local folders with Google Drive using rc
 ## Requirements
 
 - macOS 14.0 or later
-- [rclone](https://rclone.org/) installed and configured with Google Drive remote(s)
+- [rclone](https://rclone.org/) (Bundled with the app, no separate installation required)
+- Configured Google Drive remote
 
 ## Installation
 
-### Install rclone
-
-```bash
-brew install rclone
-```
-
 ### Configure Google Drive Remote
 
+Since rclone is bundled, you can configure your remote using your system's rclone or the bundled one. The app will respect existing `rclone.conf` files (usually in `~/.config/rclone/rclone.conf`).
+
+If you don't have a remote configured yet, you can do so via terminal:
+
 ```bash
+# If you have rclone installed via brew
 rclone config
+
 ```
 
 Follow the prompts to:

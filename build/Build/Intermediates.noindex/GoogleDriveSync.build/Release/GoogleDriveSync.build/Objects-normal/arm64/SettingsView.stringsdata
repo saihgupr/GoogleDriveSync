@@ -439,7 +439,7 @@
         "key": "Reset All Settings?",
         "location": {
           "startingColumn": 16,
-          "startingLine": 891
+          "startingLine": 853
         }
       },
       {
@@ -588,58 +588,10 @@
       },
       {
         "comment": "",
-        "key": "Verify rclone Installation",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 861
-        }
-      },
-      {
-        "comment": "",
-        "key": "rclone Path",
-        "location": {
-          "startingColumn": 31,
-          "startingLine": 835
-        }
-      },
-      {
-        "comment": "",
-        "key": "Detect",
-        "location": {
-          "startingColumn": 28,
-          "startingLine": 838
-        }
-      },
-      {
-        "comment": "",
-        "key": "rclone found: %@",
-        "location": {
-          "startingColumn": 30,
-          "startingLine": 849
-        }
-      },
-      {
-        "comment": "",
-        "key": "rclone not found at this path",
-        "location": {
-          "startingColumn": 30,
-          "startingLine": 856
-        }
-      },
-      {
-        "comment": "",
-        "key": "Advanced Configuration",
-        "location": {
-          "startingColumn": 22,
-          "startingLine": 868
-        }
-      },
-      {
-        "comment": "",
         "key": "Reset All Settings",
         "location": {
           "startingColumn": 24,
-          "startingLine": 872
+          "startingLine": 834
         }
       },
       {
@@ -647,7 +599,7 @@
         "key": "Danger Zone",
         "location": {
           "startingColumn": 22,
-          "startingLine": 876
+          "startingLine": 838
         }
       },
       {
@@ -655,7 +607,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 20,
-          "startingLine": 892
+          "startingLine": 854
         }
       },
       {
@@ -663,7 +615,7 @@
         "key": "Reset Everything",
         "location": {
           "startingColumn": 20,
-          "startingLine": 893
+          "startingLine": 855
         }
       },
       {
@@ -671,7 +623,7 @@
         "key": "This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 897
+          "startingLine": 859
         }
       }
     ]
