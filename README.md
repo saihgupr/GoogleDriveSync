@@ -6,9 +6,12 @@ A native macOS menu bar app for syncing local folders with Google Drive.
   <img src="Images/SCR-20260203-jwxr.jpeg" width="600" style="margin-bottom: 20px;" /><br>
   <table width="100%" style="border: none;">
     <tr>
-      <td width="33%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="100%" /></td>
-      <td width="33%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="100%" /></td>
-      <td width="33%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="100%" /></td>
+      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="100%" /></td>
+      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="100%" /></td>
+    </tr>
+    <tr>
+      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="100%" /></td>
+      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2011.36.49%E2%80%AFAM.png" width="100%" /></td>
     </tr>
   </table>
 </p>
