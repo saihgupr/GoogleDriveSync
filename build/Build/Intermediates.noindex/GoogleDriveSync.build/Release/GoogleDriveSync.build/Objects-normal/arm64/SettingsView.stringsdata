@@ -516,10 +516,18 @@
       },
       {
         "comment": "",
+        "key": "Automatically check for updates",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 789
+        }
+      },
+      {
+        "comment": "",
         "key": "Check for Updates",
         "location": {
           "startingColumn": 30,
-          "startingLine": 799
+          "startingLine": 801
         }
       },
       {
@@ -527,7 +535,7 @@
         "key": "Checking...",
         "location": {
           "startingColumn": 34,
-          "startingLine": 794
+          "startingLine": 796
         }
       },
       {
@@ -535,7 +543,7 @@
         "key": "Get Update",
         "location": {
           "startingColumn": 32,
-          "startingLine": 805
+          "startingLine": 807
         }
       },
       {
@@ -543,7 +551,7 @@
         "key": "OK",
         "location": {
           "startingColumn": 28,
-          "startingLine": 809
+          "startingLine": 811
         }
       },
       {
@@ -551,7 +559,7 @@
         "key": "Rclone Version",
         "location": {
           "startingColumn": 30,
-          "startingLine": 816
+          "startingLine": 818
         }
       },
       {
@@ -559,7 +567,7 @@
         "key": "Version",
         "location": {
           "startingColumn": 26,
-          "startingLine": 824
+          "startingLine": 826
         }
       },
       {
@@ -567,7 +575,7 @@
         "key": "v%@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 826
+          "startingLine": 828
         }
       },
       {
@@ -575,7 +583,7 @@
         "key": "About",
         "location": {
           "startingColumn": 22,
-          "startingLine": 831
+          "startingLine": 833
         }
       },
       {
@@ -583,7 +591,7 @@
         "key": "Reset All Settings?",
         "location": {
           "startingColumn": 16,
-          "startingLine": 947
+          "startingLine": 949
         }
       },
       {
@@ -591,7 +599,7 @@
         "key": "rclone Path",
         "location": {
           "startingColumn": 31,
-          "startingLine": 901
+          "startingLine": 903
         }
       },
       {
@@ -599,7 +607,7 @@
         "key": "Detect",
         "location": {
           "startingColumn": 28,
-          "startingLine": 904
+          "startingLine": 906
         }
       },
       {
@@ -607,7 +615,7 @@
         "key": "rclone found: %@",
         "location": {
           "startingColumn": 30,
-          "startingLine": 915
+          "startingLine": 917
         }
       },
       {
@@ -615,7 +623,7 @@
         "key": "rclone not found at this path",
         "location": {
           "startingColumn": 30,
-          "startingLine": 922
+          "startingLine": 924
         }
       },
       {
@@ -623,7 +631,7 @@
         "key": "rclone Configuration",
         "location": {
           "startingColumn": 22,
-          "startingLine": 927
+          "startingLine": 929
         }
       },
       {
@@ -631,7 +639,7 @@
         "key": "Check for Updates",
         "location": {
           "startingColumn": 24,
-          "startingLine": 931
+          "startingLine": 933
         }
       },
       {
@@ -639,7 +647,7 @@
         "key": "Reset All Settings",
         "location": {
           "startingColumn": 24,
-          "startingLine": 938
+          "startingLine": 940
         }
       },
       {
@@ -647,7 +655,7 @@
         "key": "Maintenance",
         "location": {
           "startingColumn": 22,
-          "startingLine": 942
+          "startingLine": 944
         }
       },
       {
@@ -655,7 +663,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 20,
-          "startingLine": 948
+          "startingLine": 950
         }
       },
       {
@@ -663,7 +671,7 @@
         "key": "Reset Everything",
         "location": {
           "startingColumn": 20,
-          "startingLine": 949
+          "startingLine": 951
         }
       },
       {
@@ -671,7 +679,7 @@
         "key": "This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 953
+          "startingLine": 955
         }
       }
     ]

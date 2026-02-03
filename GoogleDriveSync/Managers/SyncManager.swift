@@ -108,10 +108,14 @@ class SyncManager: ObservableObject {
         Task {
             await checkRcloneInstallation()
             await refreshRemotes()
-            startSyncTimer()
+            scheduleSync()
             
             if settings.syncOnLaunch && !folders.isEmpty {
                 await syncAll()
+            }
+            
+            if settings.checkUpdatesAutomatically {
+                performAutomaticUpdateCheck()
             }
         }
     }
@@ -143,7 +147,7 @@ class SyncManager: ObservableObject {
         updateLaunchAtLogin()
         
         // Restart timer with new interval
-        startSyncTimer()
+        scheduleSync()
     }
     
     // MARK: - rclone Management
@@ -384,7 +388,7 @@ class SyncManager: ObservableObject {
         saveFolders()
         
         if !syncCancelled {
-            await sendSyncNotification()
+            await sendSyncNotification(folders)
         }
     }
     
@@ -495,7 +499,7 @@ class SyncManager: ObservableObject {
     
     // MARK: - Timer
     
-    private func startSyncTimer() {
+    private func scheduleSync() {
         syncTimer?.invalidate()
         
         // For daily sync, schedule at specific time
@@ -555,7 +559,7 @@ class SyncManager: ObservableObject {
     
     // MARK: - Notifications
     
-    private func sendSyncNotification() async {
+    private func sendSyncNotification(_ folders: [SyncFolder]) async {
         let errorCount = folders.filter { $0.lastSyncStatus == .error }.count
         let hasErrors = errorCount > 0
         
@@ -564,21 +568,18 @@ class SyncManager: ObservableObject {
             return
         }
         
-        // If we have errors but notifyOnError is disabled (and showNotifications is disabled), return
-        // (This case is covered above but being explicit)
-        
         let content = UNMutableNotificationContent()
+        content.sound = .default
         
         if hasErrors {
-            content.title = "Sync Completed with Errors"
-            content.body = "\(errorCount) folder(s) failed to sync"
-            content.sound = .default
+            content.title = "Sync Failed"
+            content.body = "\(errorCount) folder(s) encountered errors"
+            content.categoryIdentifier = "SYNC_ERROR"
             
-            // Make error notifications more prominent
+            // Mark as time sensitive for errors
             if #available(macOS 12.0, *) {
                 content.interruptionLevel = .timeSensitive
             }
-            content.categoryIdentifier = "SYNC_ERROR"
         } else {
             // Success case - only proceed if showNotifications is true
             guard settings.showNotifications else { return }
@@ -616,6 +617,35 @@ class SyncManager: ObservableObject {
         }
     }
     // MARK: - Updates
+    
+    private func performAutomaticUpdateCheck() {
+        Task {
+            do {
+                let (isAvailable, latestVersion, _) = try await checkForUpdates()
+                if isAvailable {
+                    await sendUpdateNotification(version: latestVersion)
+                }
+            } catch {
+                print("Failed to check for updates: \(error)")
+            }
+        }
+    }
+    
+    private func sendUpdateNotification(version: String) async {
+        let content = UNMutableNotificationContent()
+        content.title = "Update Available"
+        content.body = "Version \(version) is available on GitHub."
+        content.sound = .default
+        
+        // Use a fixed identifier to avoid spamming the user if they don't update
+        let request = UNNotificationRequest(
+            identifier: "UPDATE_AVAILABLE",
+            content: content,
+            trigger: nil
+        )
+        
+        try? await UNUserNotificationCenter.current().add(request)
+    }
     
     /// Check for updates via GitHub API
     /// Returns: (isUpdateAvailable, latestVersion, releaseURL)

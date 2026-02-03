@@ -786,6 +786,8 @@ struct GeneralSettingsView: View {
             }
             
             Section {
+                Toggle("Automatically check for updates", isOn: $syncManager.settings.checkUpdatesAutomatically)
+                
                 Button {
                     checkForUpdates()
                 } label: {
