@@ -12,6 +12,10 @@
 		<data>
 		MoFBxXrw8M3INkdjYLvvjfmISpI=
 		</data>
+		<key>Resources/rclone</key>
+		<data>
+		cyDt1/SbZGKgJqOjvW6PuhiXjhQ=
+		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
@@ -27,6 +31,13 @@
 			<key>hash2</key>
 			<data>
 			4OpA6rB0XVZ4kUcGDXn6gCpQ5f743sVQF7sEHnryAuQ=
+			</data>
+		</dict>
+		<key>Resources/rclone</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			hxdeKObLxAkdls8K/d45NeG3mAWH+Wn+J1fQLZsV6XE=
 			</data>
 		</dict>
 	</dict>

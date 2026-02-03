@@ -6,7 +6,7 @@
 	<integer>12</integer>
 	<key>logs</key>
 	<dict>
-		<key>9F685938-4787-4D69-9A57-EA993271B7D5</key>
+		<key>B581AEBC-1CC0-45A6-93BC-A3F30D33DBF3</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>9F685938-4787-4D69-9A57-EA993271B7D5.xcactivitylog</string>
+			<string>B581AEBC-1CC0-45A6-93BC-A3F30D33DBF3.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -40,13 +40,13 @@
 			<key>signature</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>timeStartedRecording</key>
-			<real>791821670.59614098</real>
+			<real>791823799.79469299</real>
 			<key>timeStoppedRecording</key>
-			<real>791821679.75621605</real>
+			<real>791823810.23136795</real>
 			<key>title</key>
 			<string>Building project GoogleDriveSync with scheme GoogleDriveSync and configuration Release</string>
 			<key>uniqueIdentifier</key>
-			<string>9F685938-4787-4D69-9A57-EA993271B7D5</string>
+			<string>B581AEBC-1CC0-45A6-93BC-A3F30D33DBF3</string>
 		</dict>
 		<key>F9C16E54-7FDC-4D4E-906C-2812CB06AF2C</key>
 		<dict>
