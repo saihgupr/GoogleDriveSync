@@ -12,6 +12,17 @@ import ServiceManagement
 
 @MainActor
 class SyncManager: ObservableObject {
+    
+    struct GitHubRelease: Codable {
+        let tagName: String
+        let htmlUrl: String
+        
+        enum CodingKeys: String, CodingKey {
+            case tagName = "tag_name"
+            case htmlUrl = "html_url"
+        }
+    }
+
     // MARK: - Published State
     
     @Published var folders: [SyncFolder] = []
@@ -606,11 +617,38 @@ class SyncManager: ObservableObject {
     }
     // MARK: - Updates
     
-    func checkForUpdates() {
-        // Open the GitHub releases page
-        // Assuming the repo URL based on header info
-        if let url = URL(string: "https://github.com/saihgupr/GoogleDriveSync/releases") {
-            NSWorkspace.shared.open(url)
+    /// Check for updates via GitHub API
+    /// Returns: (isUpdateAvailable, latestVersion, releaseURL)
+    func checkForUpdates() async throws -> (Bool, String, URL?) {
+        let url = URL(string: "https://api.github.com/repos/saihgupr/GoogleDriveSync/releases/latest")!
+        var request = URLRequest(url: url)
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let release = try JSONDecoder().decode(GitHubRelease.self, from: data)
+        
+        let latestVersion = release.tagName.replacingOccurrences(of: "v", with: "")
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+        
+        let isUpdateAvailable = compareVersions(latest: latestVersion, current: currentVersion)
+        
+        return (isUpdateAvailable, release.tagName, URL(string: release.htmlUrl))
+    }
+    
+    private func compareVersions(latest: String, current: String) -> Bool {
+        let latestComponents = latest.split(separator: ".").compactMap { Int($0) }
+        let currentComponents = current.split(separator: ".").compactMap { Int($0) }
+        
+        let maxCount = max(latestComponents.count, currentComponents.count)
+        
+        for i in 0..<maxCount {
+            let v1 = i < latestComponents.count ? latestComponents[i] : 0
+            let v2 = i < currentComponents.count ? currentComponents[i] : 0
+            
+            if v1 > v2 { return true }
+            if v1 < v2 { return false }
         }
+        
+        return false
     }
 }

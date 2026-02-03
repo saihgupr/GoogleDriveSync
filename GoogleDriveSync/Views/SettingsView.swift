@@ -742,6 +742,12 @@ struct RenameAccountSheet: View {
 struct GeneralSettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
     
+    @State private var isCheckingForUpdates = false
+    @State private var showingUpdateAlert = false
+    @State private var updateAlertTitle = ""
+    @State private var updateAlertMessage = ""
+    @State private var updateURL: URL?
+    
     var body: some View {
         Form {
             Section {
@@ -780,8 +786,29 @@ struct GeneralSettingsView: View {
             }
             
             Section {
-                Button("Check for Updates") {
-                    syncManager.checkForUpdates()
+                Button {
+                    checkForUpdates()
+                } label: {
+                    if isCheckingForUpdates {
+                        HStack {
+                            Text("Checking...")
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    } else {
+                        Text("Check for Updates")
+                    }
+                }
+                .disabled(isCheckingForUpdates)
+                .alert(updateAlertTitle, isPresented: $showingUpdateAlert) {
+                    if let url = updateURL {
+                        Button("Get Update") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text(updateAlertMessage)
                 }
                 
                 if !syncManager.rcloneVersion.isEmpty {
@@ -808,6 +835,30 @@ struct GeneralSettingsView: View {
         .padding()
         .onChange(of: syncManager.settings) { _, _ in
             syncManager.saveSettings()
+        }
+    }
+    
+    private func checkForUpdates() {
+        isCheckingForUpdates = true
+        Task {
+            do {
+                let (isAvailable, latestVersion, url) = try await syncManager.checkForUpdates()
+                if isAvailable {
+                    updateAlertTitle = "Update Available"
+                    updateAlertMessage = "A new version (\(latestVersion)) is available."
+                    updateURL = url
+                } else {
+                    updateAlertTitle = "Up to Date"
+                    updateAlertMessage = "You are running the latest version."
+                    updateURL = nil
+                }
+            } catch {
+                updateAlertTitle = "Error"
+                updateAlertMessage = "Failed to check for updates. Please try again later."
+                updateURL = nil
+            }
+            showingUpdateAlert = true
+            isCheckingForUpdates = false
         }
     }
     

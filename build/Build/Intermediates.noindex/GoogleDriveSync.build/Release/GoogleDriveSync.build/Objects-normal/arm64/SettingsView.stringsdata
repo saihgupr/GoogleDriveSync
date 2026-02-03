@@ -447,7 +447,7 @@
         "key": "Next sync: %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 762
+          "startingLine": 768
         }
       },
       {
@@ -455,7 +455,7 @@
         "key": "Sync Interval",
         "location": {
           "startingColumn": 24,
-          "startingLine": 748
+          "startingLine": 754
         }
       },
       {
@@ -463,7 +463,7 @@
         "key": "Sync Time",
         "location": {
           "startingColumn": 25,
-          "startingLine": 757
+          "startingLine": 763
         }
       },
       {
@@ -471,7 +471,7 @@
         "key": "Sync when app launches",
         "location": {
           "startingColumn": 24,
-          "startingLine": 767
+          "startingLine": 773
         }
       },
       {
@@ -479,7 +479,7 @@
         "key": "Sync Schedule",
         "location": {
           "startingColumn": 22,
-          "startingLine": 769
+          "startingLine": 775
         }
       },
       {
@@ -487,7 +487,7 @@
         "key": "Show notifications after sync",
         "location": {
           "startingColumn": 24,
-          "startingLine": 773
+          "startingLine": 779
         }
       },
       {
@@ -495,7 +495,7 @@
         "key": "Notify on Error",
         "location": {
           "startingColumn": 24,
-          "startingLine": 775
+          "startingLine": 781
         }
       },
       {
@@ -503,7 +503,7 @@
         "key": "Launch at login",
         "location": {
           "startingColumn": 24,
-          "startingLine": 777
+          "startingLine": 783
         }
       },
       {
@@ -511,15 +511,39 @@
         "key": "App Behavior",
         "location": {
           "startingColumn": 22,
-          "startingLine": 779
+          "startingLine": 785
         }
       },
       {
         "comment": "",
         "key": "Check for Updates",
         "location": {
-          "startingColumn": 24,
-          "startingLine": 783
+          "startingColumn": 30,
+          "startingLine": 799
+        }
+      },
+      {
+        "comment": "",
+        "key": "Checking...",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 794
+        }
+      },
+      {
+        "comment": "",
+        "key": "Get Update",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 805
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 809
         }
       },
       {
@@ -527,7 +551,7 @@
         "key": "Rclone Version",
         "location": {
           "startingColumn": 30,
-          "startingLine": 789
+          "startingLine": 816
         }
       },
       {
@@ -535,7 +559,7 @@
         "key": "Version",
         "location": {
           "startingColumn": 26,
-          "startingLine": 797
+          "startingLine": 824
         }
       },
       {
@@ -543,7 +567,7 @@
         "key": "v%@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 799
+          "startingLine": 826
         }
       },
       {
@@ -551,7 +575,7 @@
         "key": "About",
         "location": {
           "startingColumn": 22,
-          "startingLine": 804
+          "startingLine": 831
         }
       },
       {
@@ -559,7 +583,7 @@
         "key": "Reset All Settings?",
         "location": {
           "startingColumn": 16,
-          "startingLine": 896
+          "startingLine": 947
         }
       },
       {
@@ -567,7 +591,7 @@
         "key": "rclone Path",
         "location": {
           "startingColumn": 31,
-          "startingLine": 850
+          "startingLine": 901
         }
       },
       {
@@ -575,7 +599,7 @@
         "key": "Detect",
         "location": {
           "startingColumn": 28,
-          "startingLine": 853
+          "startingLine": 904
         }
       },
       {
@@ -583,7 +607,7 @@
         "key": "rclone found: %@",
         "location": {
           "startingColumn": 30,
-          "startingLine": 864
+          "startingLine": 915
         }
       },
       {
@@ -591,7 +615,7 @@
         "key": "rclone not found at this path",
         "location": {
           "startingColumn": 30,
-          "startingLine": 871
+          "startingLine": 922
         }
       },
       {
@@ -599,7 +623,7 @@
         "key": "rclone Configuration",
         "location": {
           "startingColumn": 22,
-          "startingLine": 876
+          "startingLine": 927
         }
       },
       {
@@ -607,7 +631,7 @@
         "key": "Check for Updates",
         "location": {
           "startingColumn": 24,
-          "startingLine": 880
+          "startingLine": 931
         }
       },
       {
@@ -615,7 +639,7 @@
         "key": "Reset All Settings",
         "location": {
           "startingColumn": 24,
-          "startingLine": 887
+          "startingLine": 938
         }
       },
       {
@@ -623,7 +647,7 @@
         "key": "Maintenance",
         "location": {
           "startingColumn": 22,
-          "startingLine": 891
+          "startingLine": 942
         }
       },
       {
@@ -631,7 +655,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 20,
-          "startingLine": 897
+          "startingLine": 948
         }
       },
       {
@@ -639,7 +663,7 @@
         "key": "Reset Everything",
         "location": {
           "startingColumn": 20,
-          "startingLine": 898
+          "startingLine": 949
         }
       },
       {
@@ -647,7 +671,7 @@
         "key": "This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 902
+          "startingLine": 953
         }
       }
     ]
