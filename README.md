@@ -1,9 +1,9 @@
-<img align="right" src="Images/app-icon.png" width="128" />
+<h1>
+  GoogleDriveSync
+  <img src="Images/app-icon.png" width="80" align="right" />
+</h1>
 
-<br/>
-
-<p><font size="17"><b>GoogleDriveSync</b></font><br/>
-<b>A native macOS menu bar app for seamless Google Drive syncing</b></p>
+**A native macOS menu bar app for seamless Google Drive syncing**
 
 GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Simple, reliable, and living right in your menu bar. No complex setup, no external dependencies, just sync your folders.
 
