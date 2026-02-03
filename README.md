@@ -1,8 +1,10 @@
+<img align="right" src="Images/app-icon.png" width="128" />
+
 # GoogleDriveSync
 
 **A native macOS menu bar app for seamless Google Drive syncing**
 
-GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Simple, reliable, and living right in your menu bar. No complex setup, no external dependencies, just sync your folders and get on with your day.
+GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Simple, reliable, and living right in your menu bar. No complex setup, no external dependencies, just sync your folders.
 
 <p align="center">
   <img src="Images/SCR-20260203-jwxr.jpeg" width="600" /><br>
@@ -42,22 +44,22 @@ No daemons to configure, no config files to edit, no terminal commands to memori
 
 ## Features
 
-**📁 Flexible Folder Syncing**  
+**Flexible Folder Syncing**  
 Sync as many local folders as you need to any path on Google Drive. Mix and match accounts and destinations however you want.
 
-**👥 Multiple Google Accounts**  
+**Multiple Google Accounts**  
 Add and manage multiple Google Drive accounts simultaneously. Each folder can sync to a different account.
 
-**🔄 Smart Syncing**  
+**Smart Syncing**  
 Powered by rclone for reliable, efficient transfers. Set automatic sync intervals from 15 minutes to daily, or trigger manual syncs whenever you need.
 
-**🔧 Handles the Quirks**  
+**Handles the Quirks**  
 Automatically detects when macOS remounts external volumes with different names (like `/Volumes/Drive` → `/Volumes/Drive-1`) and keeps syncing without missing a beat.
 
-**⚡ Real-Time Feedback**  
+**Real-Time Feedback**  
 Watch your sync progress live with transfer speeds, file counts, and completion status. Full error reporting when something goes wrong.
 
-**🔔 Auto Updates**  
+**Auto Updates**  
 Checks for updates on launch so you're always running the latest version.
 
 ## Requirements
@@ -65,15 +67,15 @@ Checks for updates on launch so you're always running the latest version.
 - macOS 14.0 or later
 - Google Drive account(s)
 
-## Getting Started
-
-### Installation
+## Installation
+    
+### Option 1: Download (Recommended)
 
 **Download the Latest Release**
 
 Head to the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases) and grab the latest version. Launch it and you're ready to go. Updates happen automatically from then on.
 
-**Build from Source** (Optional)
+### Option 2: Build from Source
 
 If you want to build it yourself:
 
@@ -116,16 +118,14 @@ The menu bar shows live sync status with progress, transfer speeds, and file cou
 **Automatic Syncing**  
 Set up automatic sync intervals in Settings—choose from 15 min, 30 min, 1 hour, 4 hours, or daily. Or keep it manual if you prefer.
 
-## Troubleshooting
+## License
 
-**Red Warning Icon**  
-This means something went wrong with a sync. Click the warning icon in Settings to see the full error message and figure out what happened.
-
-**External Drive Issues**  
-If macOS remounts your external drive with a different name, GoogleDriveSync automatically detects the new path and keeps syncing. No manual intervention needed.
+MIT License © 2026 Saihgupr
 
 ## Support & Feedback
 
 If you encounter any issues or have feature requests, please open an issue on GitHub.
 
-I decided to make this app open-source and free for everyone to use. If you like this project, consider giving it a star ⭐ or making a donation.
+I decided to make this app open-source and free for everyone to use. If you like this project, consider giving it a star or making a donation.
+
+Built by Saihgupr for Mac users.
