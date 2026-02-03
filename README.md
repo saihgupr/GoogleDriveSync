@@ -1,81 +1,132 @@
 # GoogleDriveSync
 
-A native macOS menu bar app for syncing local folders with Google Drive.
+**GoogleDriveSync** is a native macOS menu bar application that syncs local folders to Google Drive using a reliable, zero-configuration workflow.
 
 <p align="center">
-  <img src="Images/SCR-20260203-jwxr.jpeg" width="600" style="margin-bottom: 20px;" /><br>
+  <img src="Images/SCR-20260203-jwxr.jpeg" width="600" /><br>
   <table width="100%" style="border: none;">
     <tr>
-      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="100%" /></td>
-      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="100%" /></td>
+      <td width="50%" align="center">
+        <img src="Images/Screenshot%202026-02-03%20at%2010.49.20%E2%80%AFAM.png" width="100%" />
+      </td>
+      <td width="50%" align="center">
+        <img src="Images/Screenshot%202026-02-03%20at%2010.49.23%E2%80%AFAM.png" width="100%" />
+      </td>
     </tr>
     <tr>
-      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="100%" /></td>
-      <td width="50%" align="center"><img src="Images/Screenshot%202026-02-03%20at%2011.36.49%E2%80%AFAM.png" width="100%" /></td>
+      <td width="50%" align="center">
+        <img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="100%" />
+      </td>
+      <td width="50%" align="center">
+        <img src="Images/Screenshot%202026-02-03%20at%2011.36.49%E2%80%AFAM.png" width="100%" />
+      </td>
     </tr>
   </table>
 </p>
 
+---
+
 ## Features
 
-- **Menu Bar Integration** - Lives in your menu bar for quick access.
-- **Multiple Folder Sync** - Sync as many local folders to Google Drive as you want.
-- **Zero Configuration** - No complex setup or external dependencies required.
-- **Smart Path Resolution** - Automatically handles macOS mount point changes (e.g., finding `/Volumes/Drive-1` if `/Volumes/Drive` is stuck).
-- **Multiple Accounts** - Connect and use multiple Google Drive accounts simultaneously.
-- **Automatic Sync** - Configurable sync intervals (manual, 15min, 30min, 1hr, 4hr, daily).
-- **Auto-Update** - Automatically checks for new versions on launch.
-- **Detailed Error Reporting** - Inspect sync errors directly from the UI.
-- **Reliable Backend** - Uses the industry-standard `rclone` engine for robust file transfer.
+- **Menu Bar App**  
+  Runs entirely from the macOS menu bar for quick access.
+
+- **Multiple Folder Sync**  
+  Sync any number of local folders to Google Drive.
+
+- **Zero Configuration**  
+  No manual setup, daemons, or external dependencies required.
+
+- **Smart Path Resolution**  
+  Automatically handles macOS volume remounts (e.g. `/Volumes/Drive` → `/Volumes/Drive-1`).
+
+- **Multiple Google Accounts**  
+  Connect and sync with multiple Google Drive accounts simultaneously.
+
+- **Automatic Sync Scheduling**  
+  Manual, 15 min, 30 min, 1 hr, 4 hr, or daily intervals.
+
+- **Auto Updates**  
+  Checks for updates automatically on launch.
+
+- **Detailed Error Reporting**  
+  View full sync errors directly from the UI.
+
+- **Proven Sync Engine**  
+  Powered by `rclone` for reliable and efficient file transfers.
+
+---
 
 ## Requirements
 
-- macOS 14.0 or later
+- macOS 14.0 or later  
 - Google Drive account
+
+---
 
 ## Installation
 
-### 1. Download
+### Download
 
 1. Download the latest release from the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases).
-2. Monitor the app for updates (it will auto-check on launch).
+2. Launch the app — it will automatically check for updates on startup.
 
-### 2. Build from Source (Optional)
+---
+
+### Build from Source (Optional)
 
 1. Open `GoogleDriveSync.xcodeproj` in Xcode.
-2. Build and run (⌘R).
-3. The app will launch in your menu bar.
+2. Build and run (`⌘R`).
+3. The app will appear in the macOS menu bar.
 
-### 2. Connect Google Drive
+---
 
-The app needs to authorize with your Google Drive account.
+## Google Drive Setup
 
-1. Open the app.
-2. If no accounts are configured, you will be prompted to run the setup.
-3. Follow the terminal prompts to log in to Google Drive.
+GoogleDriveSync requires authorization to access your Google Drive.
+
+1. Open the app from the menu bar.
+2. If no accounts are configured, you will be prompted to begin setup.
+3. Follow the terminal-based login flow to authorize your Google account.
+
+---
 
 ## Usage
 
-1. Click the cloud icon in your menu bar.
-2. Go to **Settings** -> **Add Folder**.
-3. **Select Local Folder**: Choose the folder on your Mac you want to upload.
-4. **Select Account**: Choose your connected Google Drive account.
-5. **Destination Folder**:
-   - Leave empty to sync to the root of your Drive.
-   - Or type a folder name (e.g., `Backups/Mac`) to keep things organized.
+1. Click the cloud icon in the menu bar.
+2. Open **Settings** → **Add Folder**.
+3. Select a **Local Folder** to sync.
+4. Choose a **Google Drive Account**.
+5. Set a **Destination Folder**:
+   - Leave empty to sync to the Drive root, or
+   - Specify a path such as `Backups/Mac`.
 6. Click **Add**.
 
-### Syncing
+---
 
-- **Sync All**: Runs sync for all configured folders.
-- **Individual Sync**: Click the `⌄` dropdown on any folder and select **Sync Now**.
-- **Progress**: Real-time progress and speed stats are shown in the menu.
+### Sync Controls
 
-### Troubleshooting
+- **Sync All**  
+  Runs sync for all configured folders.
 
-- **Red Triangle Icon**: If a sync fails, click the red warning icon in Settings to see the exact error message.
-- **Smart Paths**: If you are syncing an external drive and it gets remounted (e.g., `Drive-1`), the app will automatically find the correct volume and continue syncing.
+- **Sync Individual Folder**  
+  Use the `⌄` dropdown next to a folder and select **Sync Now**.
+
+- **Live Status**  
+  View real-time progress, transfer speed, and completion status from the menu.
+
+---
+
+## Troubleshooting
+
+- **Red Warning Icon**  
+  Indicates a sync failure. Click the icon in Settings to view the full error message.
+
+- **External Drives**  
+  If an external volume is remounted under a different name, the app will automatically locate the correct path and continue syncing.
+
+---
 
 ## License
 
-MIT
+MIT License
