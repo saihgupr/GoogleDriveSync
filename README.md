@@ -1,5 +1,7 @@
-# GoogleDriveSync
-<img src="Images/app-icon.png" width="80" align="right" />
+<h1>
+  GoogleDriveSync
+  <img src="Images/app-icon.png" width="80" align="right" />
+</h1>
 
 **A native macOS menu bar app for seamless Google Drive syncing**
 
