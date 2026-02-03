@@ -19,6 +19,12 @@ if [ $? -eq 0 ]; then
     APP_PATH="$BUILD_DIR/Build/Products/Release/GoogleDriveSync.app"
     
     if [ -d "$APP_PATH" ]; then
+        echo "Quitting existing instance..."
+        # Kill the app if it's running. '|| true' suppresses error if not running.
+        pkill -x "GoogleDriveSync" || true
+        # Wait a moment for it to close fully
+        sleep 1
+        
         echo "Launching $APP_PATH..."
         open "$APP_PATH"
     else
