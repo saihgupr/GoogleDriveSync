@@ -50,6 +50,7 @@ struct AppSettings: Codable, Equatable {
     var launchAtLogin: Bool
     var syncOnLaunch: Bool
     var dailySyncTime: Date  // Time of day for daily syncs (only hour/minute matter)
+    var checkUpdatesAutomatically: Bool
     
     static let defaultRclonePath = "/opt/homebrew/bin/rclone"
     static let intelRclonePath = "/usr/local/bin/rclone"
@@ -69,7 +70,8 @@ struct AppSettings: Codable, Equatable {
         notifyOnError: Bool = true,
         launchAtLogin: Bool = false,
         syncOnLaunch: Bool = true,
-        dailySyncTime: Date? = nil
+        dailySyncTime: Date? = nil,
+        checkUpdatesAutomatically: Bool = true
     ) {
         self.syncInterval = syncInterval
         self.rclonePath = rclonePath
@@ -78,6 +80,7 @@ struct AppSettings: Codable, Equatable {
         self.launchAtLogin = launchAtLogin
         self.syncOnLaunch = syncOnLaunch
         self.dailySyncTime = dailySyncTime ?? AppSettings.defaultDailySyncTime
+        self.checkUpdatesAutomatically = checkUpdatesAutomatically
     }
     
     static func detectRclonePath() -> String? {
