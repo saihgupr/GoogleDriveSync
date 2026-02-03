@@ -156,16 +156,11 @@ struct FolderSettingsRow: View {
                     .lineLimit(1)
                     .truncationMode(.middle)
                 
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.right")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.tertiary)
-                    Text(folder.fullRemotePath)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
+                Text(folder.fullRemotePath.trimmingCharacters(in: CharacterSet(charactersIn: ":")))
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             
             Spacer(minLength: 8)
@@ -810,14 +805,7 @@ struct GeneralSettingsView: View {
                     Text(updateAlertMessage)
                 }
                 
-                if !syncManager.rcloneVersion.isEmpty {
-                    HStack {
-                        Text("Rclone Version")
-                        Spacer()
-                        Text(syncManager.rcloneVersion)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+
                 
                 HStack {
                     Text("Version")

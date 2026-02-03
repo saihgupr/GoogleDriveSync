@@ -412,9 +412,12 @@ class SyncManager: ObservableObject {
         currentSyncFolder = folder
         folders[index].lastSyncStatus = .syncing
         
+        // Resolve the actual local path (handling Volume-1 issues)
+        let resolvedPath = resolveLocalPath(folder.localPath)
+        
         do {
             let result = try await rclone.sync(
-                source: folder.localPath,
+                source: resolvedPath,
                 destination: folder.fullRemotePath
             ) { [weak self] progress in
                 Task { @MainActor in
@@ -438,6 +441,46 @@ class SyncManager: ObservableObject {
         isSyncing = false
         
         saveFolders()
+    }
+    
+    /// Resolve correct path for Volumes that might have a suffix (e.g. /Volumes/Name-1)
+    private func resolveLocalPath(_ path: String) -> String {
+        // If path exists as is, use it
+        if FileManager.default.fileExists(atPath: path) {
+            return path
+        }
+        
+        // Only try to be smart about /Volumes paths
+        guard path.hasPrefix("/Volumes/") else { return path }
+        
+        // Example: /Volumes/Media/Backup -> components: ["", "Volumes", "Media", "Backup"]
+        let components = path.components(separatedBy: "/")
+        guard components.count >= 3 else { return path }
+        
+        let volumeName = components[2] // "Media"
+        let relativePath = components.dropFirst(3).joined(separator: "/") // "Backup"
+        
+        // Check /Volumes for variants
+        do {
+            let volumes = try FileManager.default.contentsOfDirectory(atPath: "/Volumes")
+            
+            // Look for volume starting with original name (e.g. "Media" matches "Media-1")
+            for candidate in volumes {
+                if candidate.hasPrefix(volumeName) {
+                    let newVolumePath = "/Volumes/\(candidate)"
+                    let fullNewPath = relativePath.isEmpty ? newVolumePath : "\(newVolumePath)/\(relativePath)"
+                    
+                    if FileManager.default.fileExists(atPath: fullNewPath) {
+                        print("Smart Resolve: Remapped \(path) -> \(fullNewPath)")
+                        return fullNewPath
+                    }
+                }
+            }
+        } catch {
+            print("Error listing /Volumes: \(error)")
+        }
+        
+        return path
     }
     
     /// Parse percentage from rclone progress output
