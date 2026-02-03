@@ -26,8 +26,6 @@ GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Si
   </table>
 </p>
 
----
-
 ## Why GoogleDriveSync?
 
 **Lightweight and Efficient**  
@@ -41,8 +39,6 @@ This isn't a cross-platform afterthought—it's a native Mac app designed to wor
 
 **Zero Configuration**  
 No daemons to configure, no config files to edit, no terminal commands to memorize. Install, authorize, pick your folders, done.
-
----
 
 ## Features
 
@@ -64,14 +60,10 @@ Watch your sync progress live with transfer speeds, file counts, and completion 
 **🔔 Auto Updates**  
 Checks for updates on launch so you're always running the latest version.
 
----
-
 ## Requirements
 
 - macOS 14.0 or later
 - Google Drive account(s)
-
----
 
 ## Getting Started
 
@@ -90,8 +82,6 @@ If you want to build it yourself:
 3. Hit `⌘R` to build and run
 4. The app appears in your menu bar
 
----
-
 ### Setting Up Google Drive
 
 First time running GoogleDriveSync? You'll need to authorize access to your Google Drive account(s).
@@ -100,8 +90,6 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 2. If no accounts are set up, you'll see a prompt to get started
 3. Follow the terminal-based authorization flow to connect your Google account
 4. Repeat for any additional accounts you want to add
-
----
 
 ### Adding Folders to Sync
 
@@ -113,8 +101,6 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
    - Leave it blank to sync to the root of your Drive
    - Or specify a path like `Backups/Mac` or `Projects/2026`
 6. Click **Add** and you're done
-
----
 
 ## Using GoogleDriveSync
 
@@ -130,8 +116,6 @@ The menu bar shows live sync status with progress, transfer speeds, and file cou
 **Automatic Syncing**  
 Set up automatic sync intervals in Settings—choose from 15 min, 30 min, 1 hour, 4 hours, or daily. Or keep it manual if you prefer.
 
----
-
 ## Troubleshooting
 
 **Red Warning Icon**  
@@ -139,14 +123,6 @@ This means something went wrong with a sync. Click the warning icon in Settings 
 
 **External Drive Issues**  
 If macOS remounts your external drive with a different name, GoogleDriveSync automatically detects the new path and keeps syncing. No manual intervention needed.
-
----
-
-## License
-
-MIT License
-
----
 
 ## Support & Feedback
 
