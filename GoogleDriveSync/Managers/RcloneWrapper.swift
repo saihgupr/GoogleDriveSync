@@ -1,6 +1,6 @@
 //
 //  RcloneWrapper.swift
-//  GoogleDriveSync
+//  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
 //
@@ -101,32 +101,6 @@ actor RcloneWrapper {
         }
         
         return remotes
-    }
-    
-    func listDriveRemotes() async throws -> [RcloneRemote] {
-        let allRemotes = try await listRemotes()
-        return allRemotes.filter { $0.type == "drive" }
-    }
-    
-    /// Opens Terminal to run rclone config for adding a new Google Drive
-    func configureNewDrive(name: String) async throws {
-        // Build the rclone config command
-        let command = "\(rclonePath) config create \(name) drive"
-        
-        // Open Terminal and run the command
-        let script = """
-        tell application "Terminal"
-            activate
-            do script "\(command)"
-        end tell
-        """
-        
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-e", script]
-        
-        try process.run()
-        process.waitUntilExit()
     }
     
     /// Opens Terminal to run interactive rclone config

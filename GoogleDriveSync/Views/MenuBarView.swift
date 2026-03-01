@@ -1,6 +1,6 @@
 //
 //  MenuBarView.swift
-//  GoogleDriveSync
+//  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
 //
@@ -341,9 +341,9 @@ struct FolderRowView: View {
                     NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: folder.localPath)
                 }
                 
-                Button("Open in Google Drive") {
+                Button("Open in Remote") {
                     Task {
-                        await syncManager.openFolderInGoogleDrive(folder)
+                        await syncManager.openRemoteFolder(folder)
                     }
                 }
                 

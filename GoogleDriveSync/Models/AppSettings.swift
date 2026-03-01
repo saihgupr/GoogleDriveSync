@@ -1,6 +1,6 @@
 //
 //  AppSettings.swift
-//  GoogleDriveSync
+//  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
 //
