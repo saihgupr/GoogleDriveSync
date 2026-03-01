@@ -47,18 +47,20 @@ No daemons to configure, no config files to edit, no terminal commands to memori
 
 - **Real-Time Feedback**: Watch your sync progress live with transfer speeds, file counts, and completion status. Full error reporting when something goes wrong.
 
+- **Universal Binary**: Fully supports both Apple Silicon (M1/M2/M3) and Intel-based Macs natively.
+
 - **Auto Updates**: Checks for updates on launch so you're always running the latest version.
 
 ## Requirements
 
-- macOS 14.0 or later
+- macOS 14.0 or later (Intel or Apple Silicon)
 - Google Drive account(s)
 
 ## Installation
 
 ### Option 1: Download (Recommended)
 
-Head to the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases) and grab the latest version. Launch it and you're ready to go. Updates happen automatically from then on.
+Head to the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases) and grab the latest version. The download is a **Universal Binary** that runs natively on both Intel and Apple Silicon Macs. Launch it and you're ready to go. Updates happen automatically from then on.
 
 ### Option 2: Build from Source
 

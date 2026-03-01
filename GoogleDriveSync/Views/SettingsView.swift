@@ -9,34 +9,36 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
+    @State private var selectedTab = 0
     
     var body: some View {
-        TabView {
-            FoldersSettingsView()
+        TabView(selection: $selectedTab) {
+            SyncSettingsView()
                 .tabItem {
-                    Label("Folders", systemImage: "folder")
+                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
                 }
-                .environmentObject(syncManager)
+                .tag(0)
             
             AccountsSettingsView()
                 .tabItem {
                     Label("Accounts", systemImage: "person.crop.circle")
                 }
-                .environmentObject(syncManager)
+                .tag(1)
             
             GeneralSettingsView()
                 .tabItem {
                     Label("General", systemImage: "gear")
                 }
-                .environmentObject(syncManager)
+                .tag(2)
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 500, height: 450)
+        .padding(.bottom, 20)
     }
 }
 
-// MARK: - Folders Tab
+// MARK: - Sync Settings Tab
 
-struct FoldersSettingsView: View {
+struct SyncSettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
     @State private var showingAddSheet = false
     @State private var showingAddAccountSheet = false
@@ -44,7 +46,6 @@ struct FoldersSettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Toolbar
             HStack {
                 Text("Sync Folders")
                     .font(.headline)
@@ -57,24 +58,23 @@ struct FoldersSettingsView: View {
                     Image(systemName: "plus")
                 }
                 .disabled(syncManager.availableRemotes.isEmpty)
-                .help(syncManager.availableRemotes.isEmpty ? "Add a Google Drive account first" : "Add folder")
+                .help("Add a new sync folder")
             }
             
             if syncManager.folders.isEmpty {
                 if syncManager.availableRemotes.isEmpty {
-                    // No accounts configured yet - show big connect button
+                    // No accounts at all
                     VStack(spacing: 20) {
                         Spacer()
                         
                         Image(systemName: "cloud.fill")
                             .font(.system(size: 60))
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(.blue.gradient)
                         
-                        Text("Connect to Google Drive")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                        Text("Welcome to GoogleDriveSync")
+                            .font(.title2.bold())
                         
-                        Text("Sign in with your Google account to start syncing folders.")
+                        Text("Configure a cloud storage provider to start syncing folders.")
                             .font(.body)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -83,7 +83,7 @@ struct FoldersSettingsView: View {
                         Button {
                             showingAddAccountSheet = true
                         } label: {
-                            Label("Connect Google Drive", systemImage: "link")
+                            Label("Connect Account", systemImage: "link")
                                 .font(.headline)
                                 .padding(.horizontal, 24)
                                 .padding(.vertical, 12)
@@ -91,7 +91,7 @@ struct FoldersSettingsView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
                         
-                        Text("This will open your browser to sign in.")
+                        Text("This will open a terminal window to configure rclone.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
@@ -103,7 +103,7 @@ struct FoldersSettingsView: View {
                     ContentUnavailableView {
                         Label("No Folders", systemImage: "folder")
                     } description: {
-                        Text("Add a folder to start syncing to Google Drive")
+                        Text("Add a folder to start syncing")
                     } actions: {
                         Button("Add Folder") {
                             showingAddSheet = true
@@ -284,7 +284,7 @@ struct AddFolderSheet: View {
                 }
                 
                 Section {
-                    Picker("Google Drive Account", selection: $selectedRemote) {
+                    Picker("Remote Account", selection: $selectedRemote) {
                         Text("Select...").tag(nil as RcloneRemote?)
                         ForEach(syncManager.availableRemotes) { remote in
                             Text(remote.displayName).tag(remote as RcloneRemote?)
@@ -294,7 +294,7 @@ struct AddFolderSheet: View {
                     TextField("Destination Folder (optional)", text: $remotePath)
                         .textFieldStyle(.roundedBorder)
                     
-                    Text("Leave empty to sync to the root of your Drive.\nOr type a folder path (e.g. 'Backups/MyMac').")
+                    Text("Leave empty to sync to the root.\nOr type a folder path (e.g. 'Backups/MyMac').")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -368,7 +368,7 @@ struct EditFolderSheet: View {
                 }
                 
                 Section {
-                    Picker("Google Drive Account", selection: $selectedRemote) {
+                    Picker("Remote Account", selection: $selectedRemote) {
                         Text("Select...").tag(nil as RcloneRemote?)
                         ForEach(syncManager.availableRemotes) { remote in
                             Text(remote.displayName).tag(remote as RcloneRemote?)
@@ -430,150 +430,40 @@ struct AddAccountSheet: View {
     @EnvironmentObject var syncManager: SyncManager
     @Environment(\.dismiss) private var dismiss
     
-    enum SetupStep {
-        case connecting
-        case naming
-    }
-    
-    @State private var step: SetupStep = .connecting
-    @State private var tempRemoteName: String = ""
-    @State private var accountName: String = ""
-    @State private var isProcessing = false
-    @State private var errorMessage: String?
-    
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "cloud.fill")
+        VStack(spacing: 25) {
+            Image(systemName: "terminal.fill")
                 .font(.system(size: 50))
-                .foregroundStyle(.blue)
+                .foregroundStyle(.primary.secondary)
             
-            switch step {
-            case .connecting:
-                connectingView
-            case .naming:
-                namingView
+            VStack(spacing: 12) {
+                Text("Configure Cloud Storage")
+                    .font(.title3.bold())
+                
+                Text("This will open a terminal window where you can use rclone to add a new remote.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            
+            HStack(spacing: 16) {
+                Button("Cancel") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Button("Start Setup") {
+                    Task {
+                        await syncManager.addNewRemote()
+                        dismiss()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
             }
         }
         .padding(30)
         .frame(width: 380)
-        .onAppear {
-            startConnection()
-        }
-    }
-    
-    private var connectingView: some View {
-        VStack(spacing: 16) {
-            Text("Connecting to Google Drive...")
-                .font(.headline)
-            
-            ProgressView()
-                .controlSize(.regular)
-            
-            Text("Complete the sign-in in your browser, then return here.")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            
-            Button("Cancel") {
-                dismiss()
-            }
-            .padding(.top, 8)
-        }
-    }
-    
-    private var namingView: some View {
-        VStack(spacing: 16) {
-            Text("Account Connected!")
-                .font(.headline)
-                .foregroundStyle(.green)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Give this account a name:")
-                    .font(.subheadline)
-                
-                TextField("e.g., Work, Personal, john@gmail.com", text: $accountName)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 300)
-                
-                Text("This helps you identify which Google account this is.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            if let error = errorMessage {
-                Text(error)
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-            
-            HStack(spacing: 16) {
-                Button("Skip") {
-                    dismiss()
-                }
-                
-                Button {
-                    finishWithName()
-                } label: {
-                    if isProcessing {
-                        ProgressView()
-                            .controlSize(.small)
-                            .padding(.horizontal)
-                    } else {
-                        Text("Save")
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(accountName.trimmingCharacters(in: .whitespaces).isEmpty || isProcessing)
-                .keyboardShortcut(.defaultAction)
-            }
-        }
-    }
-    
-    private func startConnection() {
-        Task {
-            if let tempName = await syncManager.quickSetupGoogleDrive() {
-                tempRemoteName = tempName
-                
-                // Poll for the remote to appear (user completing OAuth)
-                for _ in 0..<60 { // Wait up to 60 seconds
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    await syncManager.refreshRemotes()
-                    
-                    if syncManager.availableRemotes.contains(where: { $0.name == tempName }) {
-                        step = .naming
-                        return
-                    }
-                }
-            }
-            // If we get here, something went wrong
-            dismiss()
-        }
-    }
-    
-    private func finishWithName() {
-        let newName = sanitizedName
-        guard !newName.isEmpty else { return }
-        
-        isProcessing = true
-        errorMessage = nil
-        
-        Task {
-            let success = await syncManager.renameRemote(from: tempRemoteName, to: newName)
-            
-            if success {
-                dismiss()
-            } else {
-                errorMessage = "Failed to rename. The account is still connected as '\(tempRemoteName)'."
-                isProcessing = false
-            }
-        }
-    }
-    
-    private var sanitizedName: String {
-        let trimmed = accountName.trimmingCharacters(in: .whitespaces)
-        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_@.-"))
-        return String(trimmed.unicodeScalars.filter { allowed.contains($0) })
-            .replacingOccurrences(of: " ", with: "_")
     }
 }
 
@@ -582,10 +472,12 @@ struct AddAccountSheet: View {
 struct AccountsSettingsView: View {
     @EnvironmentObject var syncManager: SyncManager
     @State private var showingAddAccountSheet = false
+    @State private var showingRenameSheet = false
+    @State private var accountToRename: RcloneRemote?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Google Drive Accounts")
+            Text("Connected Accounts")
                 .font(.headline)
             
             if syncManager.availableRemotes.isEmpty {
@@ -602,7 +494,7 @@ struct AccountsSettingsView: View {
                     Button {
                         showingAddAccountSheet = true
                     } label: {
-                        Label("Connect Google Drive", systemImage: "link")
+                        Label("Connect Account", systemImage: "link")
                     }
                     .buttonStyle(.borderedProminent)
                     
@@ -618,7 +510,7 @@ struct AccountsSettingsView: View {
                         VStack(alignment: .leading) {
                             Text(remote.name)
                                 .font(.body)
-                            Text("Google Drive")
+                            Text(remote.type)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -687,9 +579,6 @@ struct AccountsSettingsView: View {
             }
         }
     }
-    
-    @State private var showingRenameSheet = false
-    @State private var accountToRename: RcloneRemote?
 }
 
 // MARK: - Rename Account Sheet
@@ -807,10 +696,6 @@ struct GeneralSettingsView: View {
                         selection: $syncManager.settings.dailySyncTime,
                         displayedComponents: .hourAndMinute
                     )
-                    
-                    Text("Next sync: \(nextSyncDescription)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
                 
                 Toggle("Sync when app launches", isOn: $syncManager.settings.syncOnLaunch)
@@ -856,8 +741,6 @@ struct GeneralSettingsView: View {
                     Text(updateAlertMessage)
                 }
                 
-
-                
                 HStack {
                     Text("Version")
                     Spacer()
@@ -869,19 +752,18 @@ struct GeneralSettingsView: View {
                 Text("About")
             }
             
-
+            Section {
+                Button("Reset Everything...", role: .destructive) {
+                    showingResetConfirmation = true
+                }
+            } header: {
+                Text("Danger Zone")
+            }
         }
         .formStyle(.grouped)
         .padding()
         .onChange(of: syncManager.settings) { _, _ in
             syncManager.saveSettings()
-        }
-        .onChange(of: syncManager.settings.rclonePath) { _, _ in
-            // When path changes, save and re-check
-            syncManager.saveSettings()
-            Task {
-                await syncManager.checkRcloneInstallation()
-            }
         }
         .alert("Reset All Settings?", isPresented: $showingResetConfirmation) {
             Button("Cancel", role: .cancel) { }
@@ -889,7 +771,7 @@ struct GeneralSettingsView: View {
                 syncManager.resetAllSettings()
             }
         } message: {
-            Text("This will remove all sync folders and Google Drive account connections from the app. This cannot be undone.")
+            Text("This will remove all sync folders and account connections from the app. This cannot be undone.")
         }
     }
     
@@ -908,45 +790,11 @@ struct GeneralSettingsView: View {
                     updateURL = nil
                 }
             } catch {
-                updateAlertTitle = "Error"
-                updateAlertMessage = "Failed to check for updates. Please try again later."
-                updateURL = nil
+                updateAlertTitle = "Update Check Failed"
+                updateAlertMessage = error.localizedDescription
             }
-            showingUpdateAlert = true
             isCheckingForUpdates = false
+            showingUpdateAlert = true
         }
     }
-    
-    /// Calculate when the next daily sync will occur
-    private var nextSyncDescription: String {
-        let calendar = Calendar.current
-        let syncTimeComponents = calendar.dateComponents([.hour, .minute], from: syncManager.settings.dailySyncTime)
-        
-        var todayComponents = calendar.dateComponents([.year, .month, .day], from: Date())
-        todayComponents.hour = syncTimeComponents.hour
-        todayComponents.minute = syncTimeComponents.minute
-        
-        guard let todayAtSyncTime = calendar.date(from: todayComponents) else {
-            return "Unknown"
-        }
-        
-        let nextSync: Date
-        if todayAtSyncTime > Date() {
-            nextSync = todayAtSyncTime
-        } else {
-            nextSync = calendar.date(byAdding: .day, value: 1, to: todayAtSyncTime) ?? todayAtSyncTime
-        }
-        
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: nextSync)
-    }
-}
-
-
-
-#Preview {
-    SettingsView()
-        .environmentObject(SyncManager())
 }

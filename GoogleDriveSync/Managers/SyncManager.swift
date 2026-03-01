@@ -1,6 +1,6 @@
 //
 //  SyncManager.swift
-//  GoogleDriveSync
+//  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
 //
@@ -82,8 +82,8 @@ class SyncManager: ObservableObject {
     
     private var rclone: RcloneWrapper!
     private var syncTimer: Timer?
-    private let userDefaultsKey = "GoogleDriveSync.Folders"
-    private let settingsKey = "GoogleDriveSync.Settings"
+    private let userDefaultsKey = "DriveSync.Folders"
+    private let settingsKey = "DriveSync.Settings"
     
     // MARK: - Initialization
     
@@ -171,6 +171,7 @@ class SyncManager: ObservableObject {
         guard isRcloneInstalled else { return }
         
         do {
+            // We now support all remotes, not just drive
             availableRemotes = try await rclone.listRemotes()
         } catch {
             print("Failed to list remotes: \(error)")
@@ -188,42 +189,12 @@ class SyncManager: ObservableObject {
         }
     }
     
-    func addNewDriveRemote(name: String) async {
-        do {
-            try await rclone.configureNewDrive(name: name)
-            // Refresh after delay
-            try? await Task.sleep(nanoseconds: 5_000_000_000)
-            await refreshRemotes()
-        } catch {
-            print("Failed to add remote: \(error)")
-        }
+    // Generic remote addition handled via interactive config
+    func addNewRemote() async {
+        await openRcloneConfig()
     }
     
-    /// Quick one-click setup for Google Drive - creates with temp name, returns the name for renaming
-    @discardableResult
-    func quickSetupGoogleDrive() async -> String? {
-        // Generate a unique temp name
-        let baseName = "_TempGDrive"
-        var name = baseName
-        var counter = 1
-        
-        let existingNames = Set(availableRemotes.map { $0.name })
-        while existingNames.contains(name) {
-            counter += 1
-            name = "\(baseName)\(counter)"
-        }
-        
-        do {
-            try await rclone.configureNewDrive(name: name)
-            // Wait a bit then refresh - user needs time to complete OAuth
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            await refreshRemotes()
-            return name
-        } catch {
-            print("Failed to setup Google Drive: \(error)")
-            return nil
-        }
-    }
+    // Quick setup removed in favor of generic support
     
     /// Rename a remote to a user-friendly name
     func renameRemote(from oldName: String, to newName: String) async -> Bool {
@@ -310,36 +281,38 @@ class SyncManager: ObservableObject {
         }
     }
     
-    /// Open the folder in Google Drive web interface
-    func openFolderInGoogleDrive(_ folder: SyncFolder) async {
-        // Get the folder ID from rclone
-        if let folderID = await rclone.getFolderID(remote: folder.remoteName, path: folder.remotePath) {
-            var urlString: String
-            if folderID == "root" {
-                // For root folder, open "My Drive" with authuser to select correct account
-                urlString = "https://drive.google.com/drive/my-drive"
-            } else {
-                // For specific folder, open by ID
-                urlString = "https://drive.google.com/drive/folders/\(folderID)"
-            }
-            
-            // Add authuser parameter with email to force correct Google account
-            if let encodedEmail = folder.remoteName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                urlString += "?authuser=\(encodedEmail)"
-            }
-            
-            if let url = URL(string: urlString) {
-                await MainActor.run {
-                    _ = NSWorkspace.shared.open(url)
+    /// Open the folder in the provider's web interface (if supported) or just open the browser
+    func openRemoteFolder(_ folder: SyncFolder) async {
+        // Attempt to guess the web URL based on remote type
+        // This is non-trivial for generic remotes.
+        // For now, we'll try to support Drive if possible, or just fail gracefully.
+        
+        guard let remote = availableRemotes.first(where: { $0.name == folder.remoteName }) else { return }
+        
+        if remote.type == "drive" {
+            // Google Drive specific logic
+            if let folderID = await rclone.getFolderID(remote: folder.remoteName, path: folder.remotePath) {
+                var urlString: String
+                if folderID == "root" {
+                     urlString = "https://drive.google.com/drive/my-drive"
+                } else {
+                     urlString = "https://drive.google.com/drive/folders/\(folderID)"
+                }
+                 if let encodedEmail = folder.remoteName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                    urlString += "?authuser=\(encodedEmail)"
+                }
+                
+                if let url = URL(string: urlString) {
+                    await MainActor.run { _ = NSWorkspace.shared.open(url) }
                 }
             }
+        } else if remote.type == "dropbox" {
+            // Basic Dropbox support could go here
+             if let url = URL(string: "https://www.dropbox.com/home") {
+                await MainActor.run { _ = NSWorkspace.shared.open(url) }
+             }
         } else {
-            // Fallback to just opening Google Drive
-            if let url = URL(string: "https://drive.google.com") {
-                await MainActor.run {
-                    NSWorkspace.shared.open(url)
-                }
-            }
+             // Generic fallback
         }
     }
     
@@ -697,10 +670,10 @@ class SyncManager: ObservableObject {
     /// Check for updates via GitHub API
     /// Returns: (isUpdateAvailable, latestVersion, releaseURL)
     func checkForUpdates() async throws -> (Bool, String, URL?) {
-        let url = URL(string: "https://api.github.com/repos/saihgupr/GoogleDriveSync/releases/latest")!
+        let url = URL(string: "https://api.github.com/repos/saihgupr/DriveSync/releases/latest")!
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("GoogleDriveSync/1.0.1", forHTTPHeaderField: "User-Agent")
+        request.setValue("DriveSync/1.0.1", forHTTPHeaderField: "User-Agent")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
