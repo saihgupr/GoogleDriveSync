@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "create-github-pull-request-from-specification": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "2693885db375a1e4a21f66ac69761a86db30911c0a2a9fcb8bac5d9dd05eeb5c"
+    },
+    "create-pull-request": {
+      "source": "cline/cline",
+      "sourceType": "github",
+      "computedHash": "d2a0ecdf51b25a15e794156dd2acd179f09783fe92a2ee4f354621fe81ea7313"
+    },
+    "pr-template-builder": {
+      "source": "patricio0312rev/skills",
+      "sourceType": "github",
+      "computedHash": "25f030f3f07e406c460253fcc243dc1d2531f0078bc7f96711a71713e00239bd"
+    }
+  }
+}
