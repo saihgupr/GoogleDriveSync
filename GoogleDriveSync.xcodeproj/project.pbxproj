@@ -16,6 +16,9 @@
 		4A1234560007 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550007 /* AppSettings.swift */; };
 		4A1234560008 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550008 /* ProcessRunner.swift */; };
 		4A1234560009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A1234550009 /* Assets.xcassets */; };
+		4A123456000A /* SyncFolderValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000C /* SyncFolderValidator.swift */; };
+		4A123456000B /* SecurityHardeningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000D /* SecurityHardeningTests.swift */; };
+		4A123456000C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A1234590003 /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,10 @@
 		4A1234550009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A123455000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A123455000B /* GoogleDriveSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoogleDriveSync.entitlements; sourceTree = "<group>"; };
+		4A123455000C /* SyncFolderValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFolderValidator.swift; sourceTree = "<group>"; };
+		4A123455000D /* SecurityHardeningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHardeningTests.swift; sourceTree = "<group>"; };
+		4A1234540002 /* GoogleDriveSyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoogleDriveSyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A1234590003 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +48,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4A1234530008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A123456000C /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				4A1234520001 /* GoogleDriveSync */,
+				4A1234520007 /* GoogleDriveSyncTests */,
 				4A1234520002 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,10 +83,19 @@
 			path = GoogleDriveSync;
 			sourceTree = "<group>";
 		};
+		4A1234520007 /* GoogleDriveSyncTests */ = {
+			isa = PBXGroup;
+			children = (
+				4A123455000D /* SecurityHardeningTests.swift */,
+			);
+			path = GoogleDriveSyncTests;
+			sourceTree = "<group>";
+		};
 		4A1234520002 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				4A1234540001 /* GoogleDriveSync.app */,
+				4A1234540002 /* GoogleDriveSyncTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				4A1234550008 /* ProcessRunner.swift */,
+				4A123455000C /* SyncFolderValidator.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -130,6 +156,23 @@
 			productReference = 4A1234540001 /* GoogleDriveSync.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4A1234530005 /* GoogleDriveSyncTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A1234570003 /* Build configuration list for PBXNativeTarget "GoogleDriveSyncTests" */;
+			buildPhases = (
+				4A1234530006 /* Sources */,
+				4A1234530008 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4A1234590001 /* PBXTargetDependency */,
+			);
+			name = GoogleDriveSyncTests;
+			productName = GoogleDriveSyncTests;
+			productReference = 4A1234540002 /* GoogleDriveSyncTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -141,6 +184,9 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					4A1234530002 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					4A1234530005 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -159,6 +205,7 @@
 			projectRoot = "";
 			targets = (
 				4A1234530002 /* GoogleDriveSync */,
+				4A1234530005 /* GoogleDriveSyncTests */,
 			);
 		};
 /* End PBXProject section */
@@ -187,10 +234,37 @@
 				4A1234560006 /* SyncFolder.swift in Sources */,
 				4A1234560007 /* AppSettings.swift in Sources */,
 				4A1234560008 /* ProcessRunner.swift in Sources */,
+				4A123456000A /* SyncFolderValidator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A1234530006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A123456000B /* SecurityHardeningTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4A1234590001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A1234530002 /* GoogleDriveSync */;
+			targetProxy = 4A1234590002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		4A1234590002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A1234500001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A1234530002;
+			remoteInfo = GoogleDriveSync;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin XCBuildConfiguration section */
 		4A1234580001 /* Debug */ = {
@@ -369,6 +443,46 @@
 			};
 			name = Release;
 		};
+		4A1234580005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saihgupr.drivesync.GoogleDriveSyncTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoogleDriveSync.app/Contents/MacOS/GoogleDriveSync";
+			};
+			name = Debug;
+		};
+		4A1234580006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saihgupr.drivesync.GoogleDriveSyncTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoogleDriveSync.app/Contents/MacOS/GoogleDriveSync";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -377,6 +491,15 @@
 			buildConfigurations = (
 				4A1234580003 /* Debug */,
 				4A1234580004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A1234570003 /* Build configuration list for PBXNativeTarget "GoogleDriveSyncTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A1234580005 /* Debug */,
+				4A1234580006 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

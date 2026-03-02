@@ -49,11 +49,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         
         // Request authorization
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            #if DEBUG
             if let error = error {
                 print("Notification permission error: \(error)")
             } else {
                 print("Notification permission granted: \(granted)")
             }
+            #endif
         }
     }
     

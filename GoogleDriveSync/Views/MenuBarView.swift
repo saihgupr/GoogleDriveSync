@@ -312,7 +312,7 @@ struct FolderRowView: View {
                     .font(.subheadline)
                     .lineLimit(1)
                 
-                Text(folder.remoteName)
+                Text(syncManager.displayName(forRemoteConfigName: folder.remoteName))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

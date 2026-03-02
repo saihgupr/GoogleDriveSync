@@ -55,6 +55,30 @@ struct AppSettings: Codable, Equatable {
     static let defaultRclonePath = "/opt/homebrew/bin/rclone"
     static let intelRclonePath = "/usr/local/bin/rclone"
     
+    /// Allowed directory prefixes for rclone executable (security: prevent running arbitrary binaries).
+    private static let allowedRclonePathPrefixes: [String] = [
+        "/opt/homebrew/bin/",
+        "/usr/local/bin/",
+        "/usr/bin/",
+        "/opt/local/bin/",
+        Bundle.main.bundlePath + "/",
+    ]
+    
+    /// Returns a valid rclone path if the given path is under an allowed directory and is executable; otherwise nil.
+    static func validateRclonePath(_ path: String) -> String? {
+        let trimmed = path.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return nil }
+        let resolved = (trimmed as NSString).standardizingPath
+        guard resolved.hasSuffix("rclone") else { return nil }
+        let allowed = allowedRclonePathPrefixes.contains { resolved.hasPrefix($0) }
+        guard allowed else { return nil }
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: resolved, isDirectory: &isDir),
+              !isDir.boolValue,
+              FileManager.default.isExecutableFile(atPath: resolved) else { return nil }
+        return resolved
+    }
+    
     /// Default sync time: 9:00 AM
     static var defaultDailySyncTime: Date {
         var components = DateComponents()
@@ -84,25 +108,27 @@ struct AppSettings: Codable, Equatable {
     }
     
     static func detectRclonePath() -> String? {
-        // 1. Check for bundled rclone (Preferred)
-        if let bundledPath = Bundle.main.path(forResource: "rclone", ofType: nil) {
-            return bundledPath
+        // 1. Check for bundled rclone (Preferred); must pass allowlist
+        if let bundledPath = Bundle.main.path(forResource: "rclone", ofType: nil),
+           let valid = validateRclonePath(bundledPath) {
+            return valid
         }
         
-        // 2. Check common system locations
+        // 2. Check common system locations (only return if allowed)
         let paths = [
+            defaultRclonePath,       // Apple Silicon Homebrew
             intelRclonePath,        // Intel Homebrew
             "/usr/bin/rclone",      // System
             "/opt/local/bin/rclone" // MacPorts
         ]
         
         for path in paths {
-            if FileManager.default.fileExists(atPath: path) {
-                return path
+            if let valid = validateRclonePath(path) {
+                return valid
             }
         }
         
-        // Try which command
+        // Try which command; only accept if path passes allowlist
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
         process.arguments = ["rclone"]
@@ -117,8 +143,9 @@ struct AppSettings: Codable, Equatable {
             
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             if let path = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-               !path.isEmpty {
-                return path
+               !path.isEmpty,
+               let valid = validateRclonePath(path) {
+                return valid
             }
         } catch {
             // Ignore

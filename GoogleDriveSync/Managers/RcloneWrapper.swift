@@ -105,10 +105,11 @@ actor RcloneWrapper {
     
     /// Opens Terminal to run interactive rclone config
     func openInteractiveConfig() async throws {
+        let escapedPath = Self.escapeForAppleScript(rclonePath)
         let script = """
         tell application "Terminal"
             activate
-            do script "\(rclonePath) config"
+            do script "\(escapedPath) config"
         end tell
         """
         
@@ -120,38 +121,11 @@ actor RcloneWrapper {
         process.waitUntilExit()
     }
     
-    /// Rename an existing remote
-    func renameRemote(from oldName: String, to newName: String) async throws {
-        // Use rclone config update to effectively rename by creating new and deleting old
-        // First, get the config for the old remote
-        let showResult = try await runner.run(rclonePath, arguments: ["config", "show", oldName])
-        guard showResult.isSuccess else {
-            throw RcloneError.invalidRemote(oldName)
-        }
-        
-        // Parse the config to get the token
-        let configLines = showResult.stdout.components(separatedBy: "\n")
-        var token = ""
-        for line in configLines {
-            if line.hasPrefix("token = ") {
-                token = String(line.dropFirst("token = ".count))
-            }
-        }
-        
-        // Create new remote with the new name using the same token
-        let createArgs = ["config", "create", newName, "drive", "token", token]
-        let createResult = try await runner.run(rclonePath, arguments: createArgs)
-        guard createResult.isSuccess else {
-            throw RcloneError.configurationFailed("Failed to create new remote: \(createResult.stderr)")
-        }
-        
-        // Delete the old remote
-        let deleteResult = try await runner.run(rclonePath, arguments: ["config", "delete", oldName])
-        guard deleteResult.isSuccess else {
-            // Try to clean up the new one if delete fails
-            _ = try? await runner.run(rclonePath, arguments: ["config", "delete", newName])
-            throw RcloneError.configurationFailed("Failed to delete old remote: \(deleteResult.stderr)")
-        }
+    /// Escape a string for safe use inside an AppleScript double-quoted string (prevents injection).
+    static func escapeForAppleScript(_ string: String) -> String {
+        string
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
     }
     
     /// Delete a remote
@@ -195,7 +169,9 @@ actor RcloneWrapper {
                 }
             }
         } catch {
+            #if DEBUG
             print("Failed to get folder ID: \(error)")
+            #endif
         }
         
         return nil

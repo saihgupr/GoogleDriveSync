@@ -265,6 +265,7 @@ struct AddFolderSheet: View {
     @State private var localPath: String = ""
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
+    @State private var validationError: String?
     
     var body: some View {
         VStack(spacing: 20) {
@@ -287,7 +288,8 @@ struct AddFolderSheet: View {
                     Picker("Remote Account", selection: $selectedRemote) {
                         Text("Select...").tag(nil as RcloneRemote?)
                         ForEach(syncManager.availableRemotes) { remote in
-                            Text(remote.displayName).tag(remote as RcloneRemote?)
+                            Text("\(syncManager.displayName(forRemoteConfigName: remote.name)) (\(remote.type))")
+                                .tag(remote as RcloneRemote?)
                         }
                     }
                     
@@ -301,6 +303,13 @@ struct AddFolderSheet: View {
             }
             .formStyle(.grouped)
             
+            if let error = validationError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal)
+            }
+            
             HStack {
                 Button("Cancel") {
                     dismiss()
@@ -310,13 +319,17 @@ struct AddFolderSheet: View {
                 Spacer()
                 
                 Button("Add") {
+                    validationError = nil
                     if let remote = selectedRemote {
-                        syncManager.addFolder(
+                        if syncManager.addFolder(
                             localPath: localPath,
                             remoteName: remote.name,
                             remotePath: remotePath
-                        )
-                        dismiss()
+                        ) {
+                            dismiss()
+                        } else {
+                            validationError = "Invalid path or remote. Use a folder in your home or a volume, and avoid special characters in the remote path."
+                        }
                     }
                 }
                 .keyboardShortcut(.defaultAction)
@@ -349,6 +362,7 @@ struct EditFolderSheet: View {
     @State private var localPath: String = ""
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
+    @State private var validationError: String?
     
     var body: some View {
         VStack(spacing: 20) {
@@ -371,7 +385,8 @@ struct EditFolderSheet: View {
                     Picker("Remote Account", selection: $selectedRemote) {
                         Text("Select...").tag(nil as RcloneRemote?)
                         ForEach(syncManager.availableRemotes) { remote in
-                            Text(remote.displayName).tag(remote as RcloneRemote?)
+                            Text("\(syncManager.displayName(forRemoteConfigName: remote.name)) (\(remote.type))")
+                                .tag(remote as RcloneRemote?)
                         }
                     }
                     
@@ -390,17 +405,28 @@ struct EditFolderSheet: View {
                 Spacer()
                 
                 Button("Save") {
+                    validationError = nil
                     if let remote = selectedRemote {
                         var updated = folder
                         updated.localPath = localPath
                         updated.remoteName = remote.name
                         updated.remotePath = remotePath
-                        syncManager.updateFolder(updated)
-                        dismiss()
+                        if syncManager.updateFolder(updated) {
+                            dismiss()
+                        } else {
+                            validationError = "Invalid path or remote. Use a folder in your home or a volume, and avoid special characters in the remote path."
+                        }
                     }
                 }
                 .keyboardShortcut(.defaultAction)
                 .disabled(localPath.isEmpty || selectedRemote == nil)
+            }
+            
+            if let error = validationError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal)
             }
         }
         .padding()
@@ -508,7 +534,7 @@ struct AccountsSettingsView: View {
                             .foregroundStyle(.green)
                         
                         VStack(alignment: .leading) {
-                            Text(remote.name)
+                            Text(syncManager.displayName(forRemoteConfigName: remote.name))
                                 .font(.body)
                             Text(remote.type)
                                 .font(.caption)

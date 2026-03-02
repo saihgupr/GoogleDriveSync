@@ -10,6 +10,19 @@ import SwiftUI
 import UserNotifications
 import ServiceManagement
 
+/// Update check configuration (single source of truth for URL and User-Agent).
+enum UpdateCheckConfig {
+    static var githubReleasesURL: URL {
+        URL(string: "https://api.github.com/repos/saihgupr/GoogleDriveSync/releases/latest")!
+    }
+    
+    static var userAgent: String {
+        let name = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "GoogleDriveSync"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        return "\(name)/\(version)"
+    }
+}
+
 @MainActor
 class SyncManager: ObservableObject {
     
@@ -84,20 +97,22 @@ class SyncManager: ObservableObject {
     private var syncTimer: Timer?
     private let userDefaultsKey = "DriveSync.Folders"
     private let settingsKey = "DriveSync.Settings"
+    private let remoteDisplayNamesKey = "DriveSync.RemoteDisplayNames"
+    private var remoteDisplayNames: [String: String] = [:]
     
     // MARK: - Initialization
     
     init() {
-        // Load settings first
+        // Load settings first; validate rclone path (allowlist) and fall back if invalid
         if let data = UserDefaults.standard.data(forKey: settingsKey),
            var savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
-            // Always check if there's a bundled rclone path that should override or update the saved one
             if let bundledPath = AppSettings.detectRclonePath() {
                 savedSettings.rclonePath = bundledPath
+            } else if AppSettings.validateRclonePath(savedSettings.rclonePath) == nil {
+                savedSettings.rclonePath = AppSettings.detectRclonePath() ?? AppSettings.defaultRclonePath
             }
             self.settings = savedSettings
         } else {
-            // Auto-detect rclone path (defaults to bundle if present)
             let detectedPath = AppSettings.detectRclonePath() ?? AppSettings.defaultRclonePath
             self.settings = AppSettings(rclonePath: detectedPath)
         }
@@ -105,8 +120,9 @@ class SyncManager: ObservableObject {
         // Now initialize rclone with settings
         self.rclone = RcloneWrapper(rclonePath: self.settings.rclonePath)
         
-        // Load folders
+        // Load folders and display names
         loadFolders()
+        loadRemoteDisplayNames()
         
         // Initial setup
         Task {
@@ -139,10 +155,40 @@ class SyncManager: ObservableObject {
         }
     }
     
+    private func loadRemoteDisplayNames() {
+        if let data = UserDefaults.standard.data(forKey: remoteDisplayNamesKey),
+           let decoded = try? JSONDecoder().decode([String: String].self, from: data) {
+            remoteDisplayNames = decoded
+        }
+    }
+    
+    private func saveRemoteDisplayNames() {
+        if let data = try? JSONEncoder().encode(remoteDisplayNames) {
+            UserDefaults.standard.set(data, forKey: remoteDisplayNamesKey)
+        }
+    }
+    
+    /// User-facing label for a remote (custom display name if set, otherwise config name).
+    func displayName(forRemoteConfigName configName: String) -> String {
+        remoteDisplayNames[configName] ?? configName
+    }
+    
+    /// Set display name for a remote (UI-only; rclone config name is unchanged).
+    func setRemoteDisplayName(configName: String, displayName: String) {
+        remoteDisplayNames[configName] = displayName
+        saveRemoteDisplayNames()
+    }
+    
     func saveSettings() {
-        if let data = try? JSONEncoder().encode(settings) {
+        // Only persist rclone path if it passes allowlist; otherwise use detected path
+        var settingsToSave = settings
+        if AppSettings.validateRclonePath(settings.rclonePath) == nil {
+            settingsToSave.rclonePath = AppSettings.detectRclonePath() ?? AppSettings.defaultRclonePath
+        }
+        if let data = try? JSONEncoder().encode(settingsToSave) {
             UserDefaults.standard.set(data, forKey: settingsKey)
         }
+        settings = settingsToSave
         
         // Update rclone wrapper with new path
         rclone = RcloneWrapper(rclonePath: settings.rclonePath)
@@ -174,7 +220,9 @@ class SyncManager: ObservableObject {
             // We now support all remotes, not just drive
             availableRemotes = try await rclone.listRemotes()
         } catch {
+            #if DEBUG
             print("Failed to list remotes: \(error)")
+            #endif
         }
     }
     
@@ -185,7 +233,9 @@ class SyncManager: ObservableObject {
             try? await Task.sleep(nanoseconds: 2_000_000_000)
             await refreshRemotes()
         } catch {
+            #if DEBUG
             print("Failed to open config: \(error)")
+            #endif
         }
     }
     
@@ -196,27 +246,15 @@ class SyncManager: ObservableObject {
     
     // Quick setup removed in favor of generic support
     
-    /// Rename a remote to a user-friendly name
+    /// Set display name for a remote (UI-only; rclone config name is unchanged; no token exposure).
     func renameRemote(from oldName: String, to newName: String) async -> Bool {
-        do {
-            try await rclone.renameRemote(from: oldName, to: newName)
-            await refreshRemotes()
-            
-            // Update any existing folders that use this remote
-            for index in folders.indices where folders[index].remoteName == oldName {
-                folders[index].remoteName = newName
-            }
-            saveFolders()
-            
-            return true
-        } catch {
-            print("Failed to rename remote: \(error)")
-            return false
-        }
+        setRemoteDisplayName(configName: oldName, displayName: newName)
+        return true
     }
     
     /// Delete a remote
     func deleteRemote(name: String) async {
+        guard SyncFolderValidator.validateRemoteName(name) else { return }
         do {
             try await rclone.deleteRemote(name: name)
             await refreshRemotes()
@@ -225,7 +263,9 @@ class SyncManager: ObservableObject {
             folders.removeAll { $0.remoteName == name }
             saveFolders()
         } catch {
+            #if DEBUG
             print("Failed to delete remote: \(error)")
+            #endif
         }
     }
     
@@ -234,10 +274,12 @@ class SyncManager: ObservableObject {
         // Clear properties
         folders.removeAll()
         availableRemotes.removeAll()
+        remoteDisplayNames.removeAll()
         
         // Clear UserDefaults
         UserDefaults.standard.removeObject(forKey: userDefaultsKey)
         UserDefaults.standard.removeObject(forKey: settingsKey)
+        UserDefaults.standard.removeObject(forKey: remoteDisplayNamesKey)
         
         // Re-initialize settings to defaults
         let detectedPath = AppSettings.detectRclonePath() ?? AppSettings.defaultRclonePath
@@ -259,7 +301,11 @@ class SyncManager: ObservableObject {
     
     // MARK: - Folder Management
     
-    func addFolder(localPath: String, remoteName: String, remotePath: String = "") {
+    /// Returns false if validation fails (invalid path or remote name).
+    func addFolder(localPath: String, remoteName: String, remotePath: String = "") -> Bool {
+        guard SyncFolderValidator.validateLocalPath(localPath),
+              SyncFolderValidator.validateRemoteName(remoteName),
+              SyncFolderValidator.validateRemotePath(remotePath) else { return false }
         let folder = SyncFolder(
             localPath: localPath,
             remoteName: remoteName,
@@ -267,6 +313,7 @@ class SyncManager: ObservableObject {
         )
         folders.append(folder)
         saveFolders()
+        return true
     }
     
     func removeFolder(_ folder: SyncFolder) {
@@ -274,11 +321,15 @@ class SyncManager: ObservableObject {
         saveFolders()
     }
     
-    func updateFolder(_ folder: SyncFolder) {
-        if let index = folders.firstIndex(where: { $0.id == folder.id }) {
-            folders[index] = folder
-            saveFolders()
-        }
+    /// Returns false if validation fails (invalid path or remote name).
+    func updateFolder(_ folder: SyncFolder) -> Bool {
+        guard SyncFolderValidator.validateLocalPath(folder.localPath),
+              SyncFolderValidator.validateRemoteName(folder.remoteName),
+              SyncFolderValidator.validateRemotePath(folder.remotePath),
+              let index = folders.firstIndex(where: { $0.id == folder.id }) else { return false }
+        folders[index] = folder
+        saveFolders()
+        return true
     }
     
     /// Open the folder in the provider's web interface (if supported) or just open the browser
@@ -448,13 +499,17 @@ class SyncManager: ObservableObject {
                     let fullNewPath = relativePath.isEmpty ? newVolumePath : "\(newVolumePath)/\(relativePath)"
                     
                     if FileManager.default.fileExists(atPath: fullNewPath) {
+                        #if DEBUG
                         print("Smart Resolve: Remapped \(path) -> \(fullNewPath)")
+                        #endif
                         return fullNewPath
                     }
                 }
             }
         } catch {
+            #if DEBUG
             print("Error listing /Volumes: \(error)")
+            #endif
         }
         
         return path
@@ -619,7 +674,9 @@ class SyncManager: ObservableObject {
     
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            #if DEBUG
             print("Notification permission: \(granted)")
+            #endif
         }
     }
     
@@ -633,7 +690,9 @@ class SyncManager: ObservableObject {
                 try SMAppService.mainApp.unregister()
             }
         } catch {
+            #if DEBUG
             print("Failed to update launch at login: \(error)")
+            #endif
         }
     }
     // MARK: - Updates
@@ -646,7 +705,9 @@ class SyncManager: ObservableObject {
                     await sendUpdateNotification(version: latestVersion)
                 }
             } catch {
+                #if DEBUG
                 print("Failed to check for updates: \(error)")
+                #endif
             }
         }
     }
@@ -670,18 +731,19 @@ class SyncManager: ObservableObject {
     /// Check for updates via GitHub API
     /// Returns: (isUpdateAvailable, latestVersion, releaseURL)
     func checkForUpdates() async throws -> (Bool, String, URL?) {
-        let url = URL(string: "https://api.github.com/repos/saihgupr/DriveSync/releases/latest")!
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: UpdateCheckConfig.githubReleasesURL)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("DriveSync/1.0.1", forHTTPHeaderField: "User-Agent")
+        request.setValue(UpdateCheckConfig.userAgent, forHTTPHeaderField: "User-Agent")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            #if DEBUG
             print("Update check failed with status code: \(httpResponse.statusCode)")
             if httpResponse.statusCode == 404 {
                 print("No 'Latest' release found on GitHub. Make sure your release is not marked as a draft or pre-release.")
             }
+            #endif
             throw URLError(.badServerResponse)
         }
         

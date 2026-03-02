@@ -103,8 +103,14 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 
 **Automatic Syncing**: Set up automatic sync intervals in Settings. Choose from 15 min, 30 min, 1 hour, 4 hours, or daily. Or keep it manual if you prefer.
 
+## Security
+
+See [SECURITY.md](SECURITY.md) for how credentials are handled, why the app runs without the App Sandbox, and how to report vulnerabilities.
+
 ## Support & Feedback
 
 If you encounter any issues or have feature requests, please [open an issue](https://github.com/saihgupr/GoogleDriveSync/issues) on GitHub.
+
+When sharing information in an issue, avoid posting your `rclone.conf` file or unredacted logs that might contain tokens or sensitive paths—see `SECURITY.md` for guidance on safely reporting problems.
 
 I decided to make this app **open-source** and **free** for everyone to use. If you like this project, consider giving it a star ⭐ or making a small donation ☕.
