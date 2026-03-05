@@ -47,7 +47,9 @@ No daemons to configure, no config files to edit, no terminal commands to memori
 
 - **Real-Time Feedback**: Watch your sync progress live with transfer speeds, file counts, and completion status. Full error reporting when something goes wrong.
 
-- **Universal Binary**: Fully supports both Apple Silicon (M1/M2/M3) and Intel-based Macs natively.
+- **Filtering Support**: Exclude specific files and directories (like `node_modules` or `.git`) from syncing using simple ignore patterns.
+
+- **Native Architecture Builds**: Optimized builds are available for both Apple Silicon (M1/M2/M3) and Intel-based Macs natively.
 
 - **Auto Updates**: Checks for updates on launch so you're always running the latest version.
 
@@ -60,7 +62,7 @@ No daemons to configure, no config files to edit, no terminal commands to memori
 
 ### Option 1: Download (Recommended)
 
-Head to the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases) and grab the latest version. The download is a **Universal Binary** that runs natively on both Intel and Apple Silicon Macs. Launch it and you're ready to go. Updates happen automatically from then on.
+Head to the [Releases page](https://github.com/saihgupr/GoogleDriveSync/releases) and grab the latest version. Download the version for your Mac's architecture (**Apple Silicon** or **Intel**). Launch it and you're ready to go. Updates happen automatically from then on.
 
 ### Option 2: Build from Source
 
@@ -103,7 +105,8 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 5. Set your **Destination Folder** on Drive:
    - Leave it blank to sync to the root of your Drive
    - Or specify a path like `Backups/Mac` or `Projects/2026`
-6. Click **Add** and you're done
+6. (Optional) Enter any **Ignored Files/Folders** patterns you want to exclude (e.g. `node_modules/**`).
+7. Click **Add** and you're done
 
 ## Using GoogleDriveSync
 
