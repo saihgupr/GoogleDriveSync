@@ -688,7 +688,7 @@ class SyncManager: ObservableObject {
         let url = URL(string: "https://api.github.com/repos/saihgupr/DriveSync/releases/latest")!
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("DriveSync/1.0.1", forHTTPHeaderField: "User-Agent")
+        request.setValue("DriveSync/1.1.0", forHTTPHeaderField: "User-Agent")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
