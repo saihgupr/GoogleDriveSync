@@ -439,18 +439,31 @@ class SyncManager: ObservableObject {
         let volumeName = components[2] // "Media"
         let relativePath = components.dropFirst(3).joined(separator: "/") // "Backup"
         
+        // Remove trailing number if present from original volume name (e.g., "Media-1" -> "Media")
+        var baseVolumeName = volumeName
+        if let range = baseVolumeName.range(of: "-[0-9]+$", options: .regularExpression) {
+            baseVolumeName.removeSubrange(range)
+        }
+        
         // Check /Volumes for variants
         do {
             let volumes = try FileManager.default.contentsOfDirectory(atPath: "/Volumes")
             
-            // Look for volume starting with original name (e.g. "Media" matches "Media-1")
+            // Look for volume sharing the same base name
             for candidate in volumes {
-                if candidate.hasPrefix(volumeName) {
+                var candidateBaseName = candidate
+                if let range = candidateBaseName.range(of: "-[0-9]+$", options: .regularExpression) {
+                    candidateBaseName.removeSubrange(range)
+                }
+                
+                if candidateBaseName == baseVolumeName {
                     let newVolumePath = "/Volumes/\(candidate)"
                     let fullNewPath = relativePath.isEmpty ? newVolumePath : "\(newVolumePath)/\(relativePath)"
                     
                     if FileManager.default.fileExists(atPath: fullNewPath) {
-                        print("Smart Resolve: Remapped \(path) -> \(fullNewPath)")
+                        if path != fullNewPath {
+                            print("Smart Resolve: Remapped \(path) -> \(fullNewPath)")
+                        }
                         return fullNewPath
                     }
                 }
