@@ -18,7 +18,7 @@ GoogleDriveSync brings Google Drive syncing to your Mac the way it should be. Si
 
 <p align="center">
   <img src="Images/Screenshot%202026-02-03%20at%2010.49.26%E2%80%AFAM.png" width="45%" />
-  <img src="Images/Screenshot%202026-02-03%20at%2011.36.49%E2%80%AFAM.png" width="45%" />
+  <img src="Images/5.png" width="45%" />
 </p>
 
 ## Why GoogleDriveSync?
@@ -47,7 +47,9 @@ No daemons to configure, no config files to edit, no terminal commands to memori
 
 - **Real-Time Feedback**: Watch your sync progress live with transfer speeds, file counts, and completion status. Full error reporting when something goes wrong.
 
-- **Filtering Support**: Exclude specific files and directories (like `node_modules` or `.git`) from syncing using simple ignore patterns.
+- **Filtering Support**: Exclude specific files and directories from syncing using simple ignore patterns. 
+  - Add patterns in the *Add/Edit Sync Folder* settings menu.
+  - Matches syntax loosely based on `.gitignore` (e.g., `node_modules`, `*.tmp`, `.build/`).
 
 - **Native Architecture Builds**: Optimized builds are available for both Apple Silicon (M1/M2/M3) and Intel-based Macs natively.
 
@@ -105,8 +107,39 @@ First time running GoogleDriveSync? You'll need to authorize access to your Goog
 5. Set your **Destination Folder** on Drive:
    - Leave it blank to sync to the root of your Drive
    - Or specify a path like `Backups/Mac` or `Projects/2026`
-6. (Optional) Enter any **Ignored Files/Folders** patterns you want to exclude (e.g. `node_modules/**`).
-7. Click **Add** and you're done
+6. (Optional) Enter any **Ignored Files/Folders** patterns you want to exclude.
+7. Click **Add** and you're done.
+
+### Understanding Ignore Patterns
+
+GoogleDriveSync uses rclone's filtering system to exclude files and directories. Each line in the "Ignored Files/Folders" box represents one exclusion rule.
+
+**Common Examples:**
+
+- **Exclude a folder and everything inside it:**
+  `node_modules/**` (This ignores the `node_modules` directory and all its contents)
+  `.git/**` (Ignores your local git history)
+
+- **Exclude specific file types:**
+  `*.tmp` (Ignores all files ending in `.tmp`)
+  `*.log` (Ignores log files)
+  `DS_Store` (Ignores macOS folder metadata)
+
+- **Exclude files starting with a prefix:**
+  `~*` (Often used to ignore temporary office documents)
+
+- **Multiple patterns:**
+  Simply put each pattern on its own line:
+  ```text
+  node_modules/**
+  .git/**
+  *.tmp
+  DS_Store
+  ```
+
+> [!TIP]
+> Patterns are relative to the root of your sync folder. If you want to ignore a `build` folder that sits in the root, use `build/**`. If you want to ignore any folder named `tmp` anywhere in the directory tree, use `**/tmp/**`.
+
 
 ## Using GoogleDriveSync
 
