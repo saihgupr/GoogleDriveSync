@@ -265,6 +265,7 @@ struct AddFolderSheet: View {
     @State private var localPath: String = ""
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
+    @State private var ignoredPatternsText: String = ""
     
     var body: some View {
         VStack(spacing: 20) {
@@ -298,6 +299,21 @@ struct AddFolderSheet: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                
+                Section {
+                    TextEditor(text: $ignoredPatternsText)
+                        .frame(height: 80)
+                        .font(.system(.body, design: .monospaced))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                        )
+                    Text("Enter patterns to ignore (one per line). e.g., 'node_modules/**' or '.git/**'")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("Ignored Files/Folders")
+                }
             }
             .formStyle(.grouped)
             
@@ -311,11 +327,19 @@ struct AddFolderSheet: View {
                 
                 Button("Add") {
                     if let remote = selectedRemote {
-                        syncManager.addFolder(
+                        let parsedPatterns = ignoredPatternsText
+                            .components(separatedBy: .newlines)
+                            .map { $0.trimmingCharacters(in: .whitespaces) }
+                            .filter { !$0.isEmpty }
+                            
+                        var folder = SyncFolder(
                             localPath: localPath,
                             remoteName: remote.name,
-                            remotePath: remotePath
+                            remotePath: remotePath,
+                            ignoredPatterns: parsedPatterns
                         )
+                        syncManager.folders.append(folder)
+                        syncManager.saveFolders()
                         dismiss()
                     }
                 }
@@ -324,7 +348,7 @@ struct AddFolderSheet: View {
             }
         }
         .padding()
-        .frame(width: 450, height: 300)
+        .frame(width: 450, height: 450)
     }
     
     private func selectFolder() {
@@ -349,6 +373,7 @@ struct EditFolderSheet: View {
     @State private var localPath: String = ""
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
+    @State private var ignoredPatternsText: String = ""
     
     var body: some View {
         VStack(spacing: 20) {
@@ -378,6 +403,21 @@ struct EditFolderSheet: View {
                     TextField("Remote Path", text: $remotePath)
                         .textFieldStyle(.roundedBorder)
                 }
+                
+                Section {
+                    TextEditor(text: $ignoredPatternsText)
+                        .frame(height: 80)
+                        .font(.system(.body, design: .monospaced))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                        )
+                    Text("Enter patterns to ignore (one per line). e.g., 'node_modules/**' or '.git/**'")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("Ignored Files/Folders")
+                }
             }
             .formStyle(.grouped)
             
@@ -395,6 +435,12 @@ struct EditFolderSheet: View {
                         updated.localPath = localPath
                         updated.remoteName = remote.name
                         updated.remotePath = remotePath
+                        
+                        updated.ignoredPatterns = ignoredPatternsText
+                            .components(separatedBy: .newlines)
+                            .map { $0.trimmingCharacters(in: .whitespaces) }
+                            .filter { !$0.isEmpty }
+                            
                         syncManager.updateFolder(updated)
                         dismiss()
                     }
@@ -404,11 +450,12 @@ struct EditFolderSheet: View {
             }
         }
         .padding()
-        .frame(width: 450, height: 300)
+        .frame(width: 450, height: 450)
         .onAppear {
             localPath = folder.localPath
             remotePath = folder.remotePath
             selectedRemote = syncManager.availableRemotes.first { $0.name == folder.remoteName }
+            ignoredPatternsText = folder.ignoredPatterns.joined(separator: "\n")
         }
     }
     

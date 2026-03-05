@@ -23,6 +23,7 @@ struct SyncFolder: Identifiable, Codable, Equatable {
     var lastSyncStatus: SyncStatus
     var isEnabled: Bool
     var lastError: String?
+    var ignoredPatterns: [String]
     
     init(
         id: UUID = UUID(),
@@ -32,7 +33,8 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         lastSyncDate: Date? = nil,
         lastSyncStatus: SyncStatus = .idle,
         isEnabled: Bool = true,
-        lastError: String? = nil
+        lastError: String? = nil,
+        ignoredPatterns: [String] = []
     ) {
         self.id = id
         self.localPath = localPath
@@ -42,6 +44,32 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         self.lastSyncStatus = lastSyncStatus
         self.isEnabled = isEnabled
         self.lastError = lastError
+        self.ignoredPatterns = ignoredPatterns
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case localPath
+        case remoteName
+        case remotePath
+        case lastSyncDate
+        case lastSyncStatus
+        case isEnabled
+        case lastError
+        case ignoredPatterns
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.localPath = try container.decode(String.self, forKey: .localPath)
+        self.remoteName = try container.decode(String.self, forKey: .remoteName)
+        self.remotePath = try container.decodeIfPresent(String.self, forKey: .remotePath) ?? ""
+        self.lastSyncDate = try container.decodeIfPresent(Date.self, forKey: .lastSyncDate)
+        self.lastSyncStatus = try container.decodeIfPresent(SyncStatus.self, forKey: .lastSyncStatus) ?? .idle
+        self.isEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnabled) ?? true
+        self.lastError = try container.decodeIfPresent(String.self, forKey: .lastError)
+        self.ignoredPatterns = try container.decodeIfPresent([String].self, forKey: .ignoredPatterns) ?? []
     }
     
     var displayName: String {

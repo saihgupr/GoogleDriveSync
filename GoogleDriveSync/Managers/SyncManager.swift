@@ -336,7 +336,8 @@ class SyncManager: ObservableObject {
             do {
                 let result = try await rclone.sync(
                     source: folders[index].localPath,
-                    destination: folders[index].fullRemotePath
+                    destination: folders[index].fullRemotePath,
+                    ignoredPatterns: folders[index].ignoredPatterns
                 ) { [weak self] progress in
                     Task { @MainActor in
                         self?.syncProgress = self?.simplifyProgress(progress) ?? progress
@@ -395,7 +396,8 @@ class SyncManager: ObservableObject {
         do {
             let result = try await rclone.sync(
                 source: resolvedPath,
-                destination: folder.fullRemotePath
+                destination: folder.fullRemotePath,
+                ignoredPatterns: folder.ignoredPatterns
             ) { [weak self] progress in
                 Task { @MainActor in
                     self?.syncProgress = self?.simplifyProgress(progress) ?? progress

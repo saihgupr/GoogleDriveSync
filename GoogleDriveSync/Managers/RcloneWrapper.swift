@@ -206,10 +206,18 @@ actor RcloneWrapper {
     func sync(
         source: String,
         destination: String,
+        ignoredPatterns: [String] = [],
         dryRun: Bool = false,
         onProgress: (@Sendable (String) -> Void)? = nil
     ) async throws -> SyncResult {
         var args = ["sync", source, destination, "--progress", "--stats-one-line"]
+        
+        for pattern in ignoredPatterns {
+            let trimmed = pattern.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty && !trimmed.hasPrefix("#") {
+                args.append(contentsOf: ["--exclude", trimmed])
+            }
+        }
         
         if dryRun {
             args.append("--dry-run")
@@ -244,9 +252,17 @@ actor RcloneWrapper {
     func copy(
         source: String,
         destination: String,
+        ignoredPatterns: [String] = [],
         onProgress: (@Sendable (String) -> Void)? = nil
     ) async throws -> SyncResult {
-        let args = ["copy", source, destination, "--progress", "--stats-one-line"]
+        var args = ["copy", source, destination, "--progress", "--stats-one-line"]
+        
+        for pattern in ignoredPatterns {
+            let trimmed = pattern.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty && !trimmed.hasPrefix("#") {
+                args.append(contentsOf: ["--exclude", trimmed])
+            }
+        }
         
         let startTime = Date()
         
