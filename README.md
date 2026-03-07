@@ -79,7 +79,18 @@ If you want to build it yourself:
 
 Since this is a personal project and is not currently signed or notarized by Apple, you will see a security warning when you first try to open the app.
 
-**To open the app:**
+### Troubleshooting "App is damaged" Errors
+
+Sometimes, macOS might report that the app is "damaged" and should be moved to the bin. This is usually just Gatekeeper being overly protective of unsigned apps downloaded from the internet.
+
+**To fix this, run the following command in Terminal:**
+
+```bash
+xattr -cr /Applications/GoogleDriveSync.app
+```
+*(Note: Adjust the path if you haven't moved the app to your Applications folder yet.)*
+
+### To open the app normally:
 
 1. **Right-click** (or Control-click) `GoogleDriveSync.app` in your Applications folder.
 2. Select **Open** from the menu.
