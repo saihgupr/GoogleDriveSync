@@ -800,6 +800,24 @@ struct GeneralSettingsView: View {
             }
             
             Section {
+                Button {
+                    if let url = URL(string: "https://ko-fi.com/saihgupr") {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
+                    HStack {
+                        Label("Buy me a coffee", systemImage: "cup.and.saucer.fill")
+                        Spacer()
+                        Image(systemName: "arrow.up.forward.app")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } header: {
+                Text("Support")
+            }
+            
+            Section {
                 Button("Reset Everything...", role: .destructive) {
                     showingResetConfirmation = true
                 }

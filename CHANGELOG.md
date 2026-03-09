@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2026-03-05
+## [1.1.1] - 2026-03-09
 
 ### Added
 - **Filtering Support**: Added the ability to exclude specific files and directories from syncing (e.g., `node_modules`, `.git`, `*.tmp`). Includes a new TextEditor UI in the Add/Edit Folder sheets to input ignore patterns.
