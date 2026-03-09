@@ -685,10 +685,13 @@ class SyncManager: ObservableObject {
     /// Check for updates via GitHub API
     /// Returns: (isUpdateAvailable, latestVersion, releaseURL)
     func checkForUpdates() async throws -> (Bool, String, URL?) {
-        let url = URL(string: "https://api.github.com/repos/saihgupr/DriveSync/releases/latest")!
+        let repoName = "GoogleDriveSync"
+        let url = URL(string: "https://api.github.com/repos/saihgupr/\(repoName)/releases/latest")!
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("DriveSync/1.1.0", forHTTPHeaderField: "User-Agent")
+        
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+        request.setValue("\(repoName)/\(currentVersion)", forHTTPHeaderField: "User-Agent")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -703,7 +706,6 @@ class SyncManager: ObservableObject {
         let release = try JSONDecoder().decode(GitHubRelease.self, from: data)
         
         let latestVersion = release.tagName.replacingOccurrences(of: "v", with: "")
-        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
         
         let isUpdateAvailable = compareVersions(latest: latestVersion, current: currentVersion)
         
