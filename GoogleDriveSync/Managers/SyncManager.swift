@@ -334,8 +334,11 @@ class SyncManager: ObservableObject {
             }
             
             do {
+                // Resolve actual path, handling Volume-1 suffix remounting (e.g. /Volumes/media vs /Volumes/media-1)
+                let resolvedPath = resolveLocalPath(folders[index].localPath)
+
                 let result = try await rclone.sync(
-                    source: folders[index].localPath,
+                    source: resolvedPath,
                     destination: folders[index].fullRemotePath,
                     ignoredPatterns: folders[index].ignoredPatterns
                 ) { [weak self] progress in

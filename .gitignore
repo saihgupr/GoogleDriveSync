@@ -5,3 +5,4 @@ build/
 rclone-bin
 rclone-arm64-bin
 rclone-amd64-bin
+release.sh
