@@ -178,20 +178,10 @@ class SyncManager: ObservableObject {
         }
     }
     
-    func openRcloneConfig() async {
-        do {
-            try await rclone.openInteractiveConfig()
-            // Refresh remotes after a delay to allow user to complete config
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-            await refreshRemotes()
-        } catch {
-            print("Failed to open config: \(error)")
-        }
-    }
-    
-    // Generic remote addition handled via interactive config
-    func addNewRemote() async {
-        await openRcloneConfig()
+    /// Adds a new Google Drive remote using the in-app browser flow
+    func addNewDriveRemote(name: String) async throws {
+        try await rclone.createDriveAccount(name: name)
+        await refreshRemotes()
     }
     
     // Quick setup removed in favor of generic support

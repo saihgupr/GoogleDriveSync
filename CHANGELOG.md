@@ -2,10 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.2] - 2026-03-10
+## [1.1.3] - 2026-03-10
 
-### Changed
-- Incremented version to 1.1.2.
+### Added
+- **In-App OAuth Flow**: Integrated a browser-based Google Drive authentication flow directly within the app, removing the need for terminal-based rclone setup.
+- **Redesigned Add Account Sheet**: A new UI that guides the user through account naming and authentication.
+- **Improved Build/Install Logic**: Automated application installation to `/Applications` and launch during deployment.
 
 ## [1.1.1] - 2026-03-09
 

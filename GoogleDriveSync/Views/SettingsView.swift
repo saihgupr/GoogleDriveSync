@@ -477,40 +477,97 @@ struct AddAccountSheet: View {
     @EnvironmentObject var syncManager: SyncManager
     @Environment(\.dismiss) private var dismiss
     
+    @State private var accountName: String = ""
+    @State private var isAuthenticating: Bool = false
+    @State private var authError: String? = nil
+    
     var body: some View {
         VStack(spacing: 25) {
-            Image(systemName: "terminal.fill")
+            Image(systemName: "safari.fill")
                 .font(.system(size: 50))
-                .foregroundStyle(.primary.secondary)
+                .foregroundStyle(.blue.gradient)
             
             VStack(spacing: 12) {
-                Text("Configure Cloud Storage")
+                Text("Connect Google Drive")
                     .font(.title3.bold())
                 
-                Text("This will open a terminal window where you can use rclone to add a new remote.")
+                Text("Give your account a name. This will open your web browser to sign in to Google Drive.")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
+            
+            VStack(alignment: .leading, spacing: 8) {
+                TextField("Account Name (e.g. Work Drive)", text: $accountName)
+                    .textFieldStyle(.roundedBorder)
+                    .disabled(isAuthenticating)
+                
+                if let error = authError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(.horizontal)
             
             HStack(spacing: 16) {
                 Button("Cancel") {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
+                .disabled(isAuthenticating)
                 
-                Button("Start Setup") {
-                    Task {
-                        await syncManager.addNewRemote()
-                        dismiss()
+                Button {
+                    authenticate()
+                } label: {
+                    if isAuthenticating {
+                        HStack {
+                            Text("Authenticating...")
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    } else {
+                        Text("Connect Account")
                     }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+                .disabled(sanitizedName.isEmpty || isAuthenticating)
             }
         }
         .padding(30)
-        .frame(width: 380)
+        .frame(width: 400)
+    }
+    
+    private var sanitizedName: String {
+        let trimmed = accountName.trimmingCharacters(in: .whitespaces)
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_@.-"))
+        return String(trimmed.unicodeScalars.filter { allowed.contains($0) })
+            .replacingOccurrences(of: " ", with: "_")
+    }
+    
+    private func authenticate() {
+        guard !sanitizedName.isEmpty else { return }
+        
+        // Check if name already exists
+        if syncManager.availableRemotes.contains(where: { $0.name == sanitizedName }) {
+            authError = "An account with this name already exists."
+            return
+        }
+        
+        isAuthenticating = true
+        authError = nil
+        
+        Task {
+            do {
+                try await syncManager.addNewDriveRemote(name: sanitizedName)
+                dismiss()
+            } catch {
+                authError = error.localizedDescription
+                isAuthenticating = false
+            }
+        }
     }
 }
 

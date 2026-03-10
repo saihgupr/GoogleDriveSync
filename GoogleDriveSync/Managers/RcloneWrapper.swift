@@ -103,21 +103,20 @@ actor RcloneWrapper {
         return remotes
     }
     
-    /// Opens Terminal to run interactive rclone config
-    func openInteractiveConfig() async throws {
-        let script = """
-        tell application "Terminal"
-            activate
-            do script "\(rclonePath) config"
-        end tell
-        """
+    /// Creates a new Google Drive remote using in-app browser OAuth flow
+    func createDriveAccount(name: String) async throws {
+        let args = [
+            "config", "create", name, "drive",
+            "scope", "drive",
+            "config_is_local", "true",
+            "--non-interactive"
+        ]
         
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-e", script]
-        
-        try process.run()
-        process.waitUntilExit()
+        // This will block and wait for the user to complete OAuth in their browser
+        let result = try await runner.run(rclonePath, arguments: args)
+        guard result.isSuccess else {
+            throw RcloneError.configurationFailed("Failed to authenticate: \(result.stderr)")
+        }
     }
     
     /// Rename an existing remote
