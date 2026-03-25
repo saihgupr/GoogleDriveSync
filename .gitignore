@@ -1,8 +1,44 @@
-.git-backup-*
-deploy.sh
+# macOS
+.DS_Store
+
+# Xcode
 build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+
+# Build Products
+*.ipa
+*.deb
+*.app
+*.dSYM
+
+# Local Databases
+*.sqlitedb*
+media_check.db*
+
+# Logs
 *.log
+
+# Binaries
 rclone-bin
 rclone-arm64-bin
 rclone-amd64-bin
+
+# Backup
+.git-backup-*
+
+# Scripts
+deploy.sh
 release.sh
