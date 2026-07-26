@@ -8,6 +8,20 @@
 
 import Foundation
 
+enum SyncMode: String, Codable {
+    case sync
+    case bisync
+
+    var displayName: String {
+        switch self {
+        case .sync:
+            return "One-way Sync"
+        case .bisync:
+            return "Two-way Sync"
+        }
+    }
+}
+
 enum BisyncState: String, Codable {
     case uninitialized
     case ready
@@ -31,6 +45,7 @@ struct SyncFolder: Identifiable, Codable, Equatable {
     var isEnabled: Bool
     var lastError: String?
     var ignoredPatterns: [String]
+    var syncMode: SyncMode
     var bisyncState: BisyncState
     
     init(
@@ -42,7 +57,9 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         lastSyncStatus: SyncStatus = .idle,
         isEnabled: Bool = true,
         lastError: String? = nil,
-        ignoredPatterns: [String] = []
+        ignoredPatterns: [String] = [],
+        syncMode: SyncMode = .sync,
+        bisyncState: BisyncState = .uninitialized
     ) {
         self.id = id
         self.localPath = localPath
@@ -53,7 +70,8 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         self.isEnabled = isEnabled
         self.lastError = lastError
         self.ignoredPatterns = ignoredPatterns
-        self.bisyncState = .uninitialized
+        self.syncMode = syncMode
+        self.bisyncState = bisyncState
     }
     
     enum CodingKeys: String, CodingKey {
@@ -66,6 +84,8 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         case isEnabled
         case lastError
         case ignoredPatterns
+        case syncMode
+        case bisyncState
     }
     
     init(from decoder: Decoder) throws {
@@ -79,7 +99,9 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         self.isEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnabled) ?? true
         self.lastError = try container.decodeIfPresent(String.self, forKey: .lastError)
         self.ignoredPatterns = try container.decodeIfPresent([String].self, forKey: .ignoredPatterns) ?? []
-        self.bisyncState = .uninitialized
+        // Take care of UserDefaults
+        self.syncMode = try container.decodeIfPresent(SyncMode.self, forKey: .syncMode) ?? .sync
+        self.bisyncState = try container.decodeIfPresent(BisyncState.self,forKey: .bisyncState) ?? .uninitialized
     }
     
     var displayName: String {
