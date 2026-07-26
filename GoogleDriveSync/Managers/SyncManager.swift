@@ -251,11 +251,17 @@ class SyncManager: ObservableObject {
     
     // MARK: - Folder Management
     
-    func addFolder(localPath: String, remoteName: String, remotePath: String = "") {
+    func addFolder(
+        localPath: String,
+        remoteName: String,
+        remotePath: String = "",
+        syncMode: SyncMode = .sync
+    ) {
         let folder = SyncFolder(
             localPath: localPath,
             remoteName: remoteName,
-            remotePath: remotePath
+            remotePath: remotePath,
+            syncMode: syncMode
         )
         folders.append(folder)
         saveFolders()
