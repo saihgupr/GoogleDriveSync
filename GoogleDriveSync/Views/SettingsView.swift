@@ -368,7 +368,7 @@ struct AddFolderSheet: View {
                             .map { $0.trimmingCharacters(in: .whitespaces) }
                             .filter { !$0.isEmpty }
                             
-                        var folder = SyncFolder(
+                        let folder = SyncFolder(
                             localPath: localPath,
                             remoteName: remote.name,
                             remotePath: remotePath,
