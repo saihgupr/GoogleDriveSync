@@ -360,6 +360,8 @@ class SyncManager: ObservableObject {
             let localPath = folders[index].localPath
             let remotePath = folders[index].fullRemotePath
             let ignoredPatterns = folders[index].ignoredPatterns
+            let syncMode = folders[index].syncMode
+            let bisyncState = folders[index].bisyncState
 
             // Resolve the actual local path (handling Volume-1 issues)
             let resolvedPath = resolveLocalPath(localPath)
@@ -367,7 +369,7 @@ class SyncManager: ObservableObject {
             do {
                 let result: SyncResult
 
-                switch folders[index].syncMode {
+                switch syncMode {
                 case .sync:
                     result = try await rclone.sync(
                         source: resolvedPath,
@@ -385,7 +387,7 @@ class SyncManager: ObservableObject {
 
                 case .bisync:
                     let mode: BisyncMode
-                    switch folders[index].bisyncState {
+                    switch bisyncState {
                     case .uninitialized: mode = .initial
                     case .ready: mode = .normal
                     case .needsResync: mode = .resync
@@ -415,7 +417,13 @@ class SyncManager: ObservableObject {
                     continue
                 }
 
-                if result.success && folders[currentIndex].syncMode == .bisync {
+                let configurationUnchanged =
+                    folders[currentIndex].localPath == localPath &&
+                    folders[currentIndex].fullRemotePath == remotePath &&
+                    folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                    folders[currentIndex].syncMode == syncMode
+
+                if result.success && syncMode == .bisync && configurationUnchanged {
                     folders[currentIndex].bisyncState = .ready
                 }
 
@@ -436,6 +444,20 @@ class SyncManager: ObservableObject {
                     folders[currentIndex].lastSyncStatus = .idle
                     folders[currentIndex].lastError = nil
                 } else {
+                    let configurationUnchanged =
+                        folders[currentIndex].localPath == localPath &&
+                        folders[currentIndex].fullRemotePath == remotePath &&
+                        folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                        folders[currentIndex].syncMode == syncMode
+
+                    if syncMode == .bisync,
+                       configurationUnchanged,
+                       let rcloneError = error as? RcloneError,
+                       case .bisyncNeedsResync(_) = rcloneError {
+
+                        folders[currentIndex].bisyncState = .needsResync
+                    }
+
                     folders[currentIndex].lastSyncStatus = .error
                     folders[currentIndex].lastError = error.localizedDescription
                 }
@@ -486,6 +508,8 @@ class SyncManager: ObservableObject {
         let localPath = folders[index].localPath
         let remotePath = folders[index].fullRemotePath
         let ignoredPatterns = folders[index].ignoredPatterns
+        let syncMode = folders[index].syncMode
+        let bisyncState = folders[index].bisyncState
 
         // Resolve the actual local path (handling Volume-1 issues)
         let resolvedPath = resolveLocalPath(localPath)
@@ -493,7 +517,7 @@ class SyncManager: ObservableObject {
         do {
             let result: SyncResult
 
-            switch folders[index].syncMode {
+            switch syncMode {
             case .sync:
                 result = try await rclone.sync(
                     source: resolvedPath,
@@ -511,7 +535,7 @@ class SyncManager: ObservableObject {
 
             case .bisync:
                 let mode: BisyncMode
-                switch folders[index].bisyncState {
+                switch bisyncState {
                 case .uninitialized: mode = .initial
                 case .ready: mode = .normal
                 case .needsResync: mode = .resync
@@ -534,7 +558,13 @@ class SyncManager: ObservableObject {
             }
             
             if let currentIndex = folders.firstIndex(where: {$0.id == folderID}) {
-                if result.success && folders[currentIndex].syncMode == .bisync {
+                let configurationUnchanged =
+                    folders[currentIndex].localPath == localPath &&
+                    folders[currentIndex].fullRemotePath == remotePath &&
+                    folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                    folders[currentIndex].syncMode == syncMode
+
+                if result.success && syncMode == .bisync && configurationUnchanged {
                     folders[currentIndex].bisyncState = .ready
                 }
 
@@ -549,6 +579,20 @@ class SyncManager: ObservableObject {
                     folders[currentIndex].lastSyncStatus = .idle
                     folders[currentIndex].lastError = nil
                 } else {
+                    let configurationUnchanged =
+                        folders[currentIndex].localPath == localPath &&
+                        folders[currentIndex].fullRemotePath == remotePath &&
+                        folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                        folders[currentIndex].syncMode == syncMode
+
+                    if syncMode == .bisync,
+                       configurationUnchanged,
+                       let rcloneError = error as? RcloneError,
+                       case .bisyncNeedsResync(_) = rcloneError {
+
+                        folders[currentIndex].bisyncState = .needsResync
+                    }
+
                     folders[currentIndex].lastSyncStatus = .error
                     folders[currentIndex].lastError = error.localizedDescription
                 }
