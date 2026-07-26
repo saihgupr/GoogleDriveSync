@@ -30,7 +30,7 @@ enum RcloneError: LocalizedError {
         case .syncFailed(let message):
             return "Sync failed: \(message)"
         case .bisyncNeedsResync(let message):
-            return "Bi-Sync failed: \(message)"
+            return "Bi-Sync failed and requires a resync: \(message)"
         case .invalidRemote(let name):
             return "Invalid remote: \(name)"
         }
@@ -363,7 +363,15 @@ actor RcloneWrapper {
         let duration = Date().timeIntervalSince(startTime)
 
         guard result.isSuccess else {
-            throw RcloneError.syncFailed(result.stderr)
+            let errorMessage = result.stderr.isEmpty
+                ? result.stdout
+                : result.stderr
+
+            if result.exitCode == 7 {
+                throw RcloneError.bisyncNeedsResync(errorMessage)
+            }
+
+            throw RcloneError.syncFailed(errorMessage)
         }
 
         let combinedOutput = result.stdout + "\n" + result.stderr
