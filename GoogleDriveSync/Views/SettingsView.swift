@@ -197,10 +197,20 @@ struct FolderSettingsRow: View {
 
             // Folder info (takes available space)
             VStack(alignment: .leading, spacing: 3) {
-                Text(folder.displayName)
-                    .font(.system(size: 14, weight: .semibold))
-                    .lineLimit(1)
-                
+                HStack(spacing: 6) {
+                    Text(folder.displayName)
+                        .font(.system(size: 14, weight: .semibold))
+                        .lineLimit(1)
+
+                    Text(folder.syncMode == .bisync ? "Two-way" : "One-way")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.secondary.opacity(0.12))
+                        .clipShape(Capsule())
+                }
+
                 Text(folder.localPath)
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
@@ -266,6 +276,7 @@ struct AddFolderSheet: View {
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
     @State private var ignoredPatternsText: String = ""
+    @State private var syncMode: SyncMode = .sync
     
     var body: some View {
         VStack(spacing: 20) {
@@ -300,6 +311,31 @@ struct AddFolderSheet: View {
                         .foregroundStyle(.secondary)
                 }
                 
+                Section {
+                    Toggle(
+                        "Two-way sync",
+                        isOn: Binding(
+                            get: {
+                                syncMode == .bisync
+                            },
+                            set: { enabled in
+                                syncMode = enabled ? .bisync : .sync
+                            }
+                        )
+                    )
+
+                    Text(
+                        syncMode == .bisync
+                        ? "Changes on both the local and remote side are synchronized."
+                        : "The remote folder is mirrored from the local folder."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                } header: {
+                    Text("Sync Mode")
+                }
+
                 Section {
                     TextEditor(text: $ignoredPatternsText)
                         .frame(height: 80)
@@ -336,7 +372,8 @@ struct AddFolderSheet: View {
                             localPath: localPath,
                             remoteName: remote.name,
                             remotePath: remotePath,
-                            ignoredPatterns: parsedPatterns
+                            ignoredPatterns: parsedPatterns,
+                            syncMode: syncMode
                         )
                         syncManager.folders.append(folder)
                         syncManager.saveFolders()
@@ -374,6 +411,7 @@ struct EditFolderSheet: View {
     @State private var selectedRemote: RcloneRemote?
     @State private var remotePath: String = ""
     @State private var ignoredPatternsText: String = ""
+    @State private var syncMode: SyncMode = .sync
     
     var body: some View {
         VStack(spacing: 20) {
@@ -402,6 +440,31 @@ struct EditFolderSheet: View {
                     
                     TextField("Remote Path", text: $remotePath)
                         .textFieldStyle(.roundedBorder)
+                }
+
+                Section {
+                    Toggle(
+                        "Two-way sync",
+                        isOn: Binding(
+                            get: {
+                                syncMode == .bisync
+                            },
+                            set: { enabled in
+                                syncMode = enabled ? .bisync : .sync
+                            }
+                        )
+                    )
+
+                    Text(
+                        syncMode == .bisync
+                        ? "Changes on both the local and remote side are synchronized."
+                        : "The remote folder is mirrored from the local folder."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                } header: {
+                    Text("Sync Mode")
                 }
                 
                 Section {
@@ -435,6 +498,7 @@ struct EditFolderSheet: View {
                         updated.localPath = localPath
                         updated.remoteName = remote.name
                         updated.remotePath = remotePath
+                        updated.syncMode = syncMode
                         
                         updated.ignoredPatterns = ignoredPatternsText
                             .components(separatedBy: .newlines)
@@ -456,6 +520,7 @@ struct EditFolderSheet: View {
             remotePath = folder.remotePath
             selectedRemote = syncManager.availableRemotes.first { $0.name == folder.remoteName }
             ignoredPatternsText = folder.ignoredPatterns.joined(separator: "\n")
+            syncMode = folder.syncMode
         }
     }
     
