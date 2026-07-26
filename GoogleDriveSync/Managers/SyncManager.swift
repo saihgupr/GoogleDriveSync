@@ -3,6 +3,7 @@
 //  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
+//  Edited by MichasCoup on 2026-07-26.
 //
 
 import Foundation
@@ -195,6 +196,7 @@ class SyncManager: ObservableObject {
             // Update any existing folders that use this remote
             for index in folders.indices where folders[index].remoteName == oldName {
                 folders[index].remoteName = newName
+                folders[index].bisyncState = .uninitialized
             }
             saveFolders()
             

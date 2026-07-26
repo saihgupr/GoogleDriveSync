@@ -3,9 +3,16 @@
 //  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
+//  Edited by MichasCoup on 2026-07-26.
 //
 
 import Foundation
+
+enum BisyncState: String, Codable {
+    case uninitialized
+    case ready
+    case needsResync
+}
 
 enum SyncStatus: String, Codable {
     case idle
@@ -24,6 +31,7 @@ struct SyncFolder: Identifiable, Codable, Equatable {
     var isEnabled: Bool
     var lastError: String?
     var ignoredPatterns: [String]
+    var bisyncState: BisyncState
     
     init(
         id: UUID = UUID(),
@@ -45,6 +53,7 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         self.isEnabled = isEnabled
         self.lastError = lastError
         self.ignoredPatterns = ignoredPatterns
+        self.bisyncState = .uninitialized
     }
     
     enum CodingKeys: String, CodingKey {
@@ -70,6 +79,7 @@ struct SyncFolder: Identifiable, Codable, Equatable {
         self.isEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnabled) ?? true
         self.lastError = try container.decodeIfPresent(String.self, forKey: .lastError)
         self.ignoredPatterns = try container.decodeIfPresent([String].self, forKey: .ignoredPatterns) ?? []
+        self.bisyncState = .uninitialized
     }
     
     var displayName: String {
