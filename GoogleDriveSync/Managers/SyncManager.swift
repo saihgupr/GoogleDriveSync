@@ -3,6 +3,7 @@
 //  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
+//  Edited by MichasCoup on 2026-07-26.
 //
 
 import Foundation
@@ -195,6 +196,7 @@ class SyncManager: ObservableObject {
             // Update any existing folders that use this remote
             for index in folders.indices where folders[index].remoteName == oldName {
                 folders[index].remoteName = newName
+                folders[index].bisyncState = .uninitialized
             }
             saveFolders()
             
@@ -249,11 +251,17 @@ class SyncManager: ObservableObject {
     
     // MARK: - Folder Management
     
-    func addFolder(localPath: String, remoteName: String, remotePath: String = "") {
+    func addFolder(
+        localPath: String,
+        remoteName: String,
+        remotePath: String = "",
+        syncMode: SyncMode = .sync
+    ) {
         let folder = SyncFolder(
             localPath: localPath,
             remoteName: remoteName,
-            remotePath: remotePath
+            remotePath: remotePath,
+            syncMode: syncMode
         )
         folders.append(folder)
         saveFolders()
@@ -265,10 +273,28 @@ class SyncManager: ObservableObject {
     }
     
     func updateFolder(_ folder: SyncFolder) {
-        if let index = folders.firstIndex(where: { $0.id == folder.id }) {
-            folders[index] = folder
-            saveFolders()
+        guard let index = folders.firstIndex(where: {
+            $0.id == folder.id
+        }) else {
+            return
         }
+
+        let oldFolder = folders[index]
+        var updatedFolder = folder
+
+        let syncConfigurationChanged =
+            oldFolder.localPath != folder.localPath ||
+            oldFolder.remoteName != folder.remoteName ||
+            oldFolder.remotePath != folder.remotePath ||
+            oldFolder.ignoredPatterns != folder.ignoredPatterns ||
+            oldFolder.syncMode != folder.syncMode
+
+        if syncConfigurationChanged {
+            updatedFolder.bisyncState = .uninitialized
+        }
+
+        folders[index] = updatedFolder
+        saveFolders()
     }
     
     /// Open the folder in the provider's web interface (if supported) or just open the browser
@@ -310,59 +336,152 @@ class SyncManager: ObservableObject {
     
     func syncAll() async {
         guard !isSyncing else { return }
-        
+        syncCancelled = false
         isSyncing = true
-        
-        for index in folders.indices where folders[index].isEnabled {
+
+        let folderIDs = folders
+            .filter { $0.isEnabled }
+            .map { $0.id }
+
+        for folderID in folderIDs {
+            guard !syncCancelled else {
+                break
+            }
+
+            guard let index = folders.firstIndex(where: {
+                $0.id == folderID
+            }) else {
+                continue
+            }
+
             currentSyncFolder = folders[index]
             folders[index].lastSyncStatus = .syncing
             
-            // Check if cancelled before starting this folder
-            if syncCancelled {
-                folders[index].lastSyncStatus = .idle
-                break
-            }
-            
-            do {
-                // Resolve actual path, handling Volume-1 suffix remounting (e.g. /Volumes/media vs /Volumes/media-1)
-                let resolvedPath = resolveLocalPath(folders[index].localPath)
+            let localPath = folders[index].localPath
+            let remotePath = folders[index].fullRemotePath
+            let ignoredPatterns = folders[index].ignoredPatterns
+            let syncMode = folders[index].syncMode
+            let bisyncState = folders[index].bisyncState
 
-                let result = try await rclone.sync(
-                    source: resolvedPath,
-                    destination: folders[index].fullRemotePath,
-                    ignoredPatterns: folders[index].ignoredPatterns
-                ) { [weak self] progress in
-                    Task { @MainActor in
-                        self?.syncProgress = self?.simplifyProgress(progress) ?? progress
-                        // Parse percentage from rclone output (e.g., "Transferred: 5 / 10, 50%")
-                        self?.syncProgressPercent = self?.parseProgressPercent(from: progress)
+            // Resolve the actual local path (handling Volume-1 issues)
+            let resolvedPath = resolveLocalPath(localPath)
+
+            do {
+                let result: SyncResult
+
+                switch syncMode {
+                case .sync:
+                    result = try await rclone.sync(
+                        source: resolvedPath,
+                        destination: remotePath,
+                        ignoredPatterns: ignoredPatterns
+                    ) { [weak self] progress in
+                        Task { @MainActor in
+                            self?.syncProgress =
+                                self?.simplifyProgress(progress) ?? progress
+
+                            self?.syncProgressPercent =
+                                self?.parseProgressPercent(from: progress)
+                        }
+                    }
+
+                case .bisync:
+                    let mode: BisyncMode
+                    switch bisyncState {
+                    case .uninitialized: mode = .initial
+                    case .ready: mode = .normal
+                    case .needsResync: mode = .resync
+                    }
+
+                    result = try await rclone.bidirectionalSync(
+                        local: resolvedPath,
+                        remote: remotePath,
+                        ignoredPatterns: ignoredPatterns,
+                        mode: mode
+                    ) { [weak self] progress in
+                        Task { @MainActor in
+                            self?.syncProgress =
+                                self?.simplifyProgress(progress) ?? progress
+
+                            self?.syncProgressPercent =
+                                self?.parseProgressPercent(from: progress)
+                        }
                     }
                 }
-                
-                folders[index].lastSyncDate = Date()
-                folders[index].lastSyncStatus = result.success ? .success : .error
-                folders[index].lastError = nil
-                
+
+                // The array may have changed during await,
+                // so resolve the index again.
+                guard let currentIndex = folders.firstIndex(where: {
+                    $0.id == folderID
+                }) else {
+                    continue
+                }
+
+                let configurationUnchanged =
+                    folders[currentIndex].localPath == localPath &&
+                    folders[currentIndex].fullRemotePath == remotePath &&
+                    folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                    folders[currentIndex].syncMode == syncMode
+
+                if result.success && syncMode == .bisync && configurationUnchanged {
+                    folders[currentIndex].bisyncState = .ready
+                }
+
+                folders[currentIndex].lastSyncDate = Date()
+                folders[currentIndex].lastSyncStatus = result.success ? .success : .error
+                folders[currentIndex].lastError = nil
+
             } catch {
-                folders[index].lastSyncStatus = .error
-                folders[index].lastError = error.localizedDescription
+                // The array may also have changed when an error
+                // occurred during the awaited operation.
+                guard let currentIndex = folders.firstIndex(where: {
+                    $0.id == folderID
+                }) else {
+                    continue
+                }
+
+                if syncCancelled {
+                    folders[currentIndex].lastSyncStatus = .idle
+                    folders[currentIndex].lastError = nil
+                } else {
+                    let configurationUnchanged =
+                        folders[currentIndex].localPath == localPath &&
+                        folders[currentIndex].fullRemotePath == remotePath &&
+                        folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                        folders[currentIndex].syncMode == syncMode
+
+                    if syncMode == .bisync,
+                       configurationUnchanged,
+                       let rcloneError = error as? RcloneError,
+                       case .bisyncNeedsResync(_) = rcloneError {
+
+                        folders[currentIndex].bisyncState = .needsResync
+                    }
+
+                    folders[currentIndex].lastSyncStatus = .error
+                    folders[currentIndex].lastError = error.localizedDescription
+                }
             }
         }
-        
+
+        let wasCancelled = syncCancelled
         currentSyncFolder = nil
         syncProgress = ""
         syncProgressPercent = nil
         syncCancelled = false
         isSyncing = false
-        lastSyncDate = Date()
-        
+
+        if !wasCancelled {
+            lastSyncDate = Date()
+        }
+
         saveFolders()
-        
-        if !syncCancelled {
+
+        if !wasCancelled {
             await sendSyncNotification(folders)
         }
     }
-    
+
     /// Cancel the current sync operation
     func cancelSync() {
         guard isSyncing else { return }
@@ -377,41 +496,120 @@ class SyncManager: ObservableObject {
     
     func syncFolder(_ folder: SyncFolder) async {
         guard !isSyncing else { return }
-        guard let index = folders.firstIndex(where: { $0.id == folder.id }) else { return }
+
+        let folderID = folder.id
+        guard let index = folders.firstIndex(where:{ $0.id == folderID }) else { return }
         
+        syncCancelled = false
         isSyncing = true
-        currentSyncFolder = folder
+        currentSyncFolder = folders[index]
         folders[index].lastSyncStatus = .syncing
         
+        let localPath = folders[index].localPath
+        let remotePath = folders[index].fullRemotePath
+        let ignoredPatterns = folders[index].ignoredPatterns
+        let syncMode = folders[index].syncMode
+        let bisyncState = folders[index].bisyncState
+
         // Resolve the actual local path (handling Volume-1 issues)
-        let resolvedPath = resolveLocalPath(folder.localPath)
+        let resolvedPath = resolveLocalPath(localPath)
         
         do {
-            let result = try await rclone.sync(
-                source: resolvedPath,
-                destination: folder.fullRemotePath,
-                ignoredPatterns: folder.ignoredPatterns
-            ) { [weak self] progress in
-                Task { @MainActor in
-                    self?.syncProgress = self?.simplifyProgress(progress) ?? progress
-                    self?.syncProgressPercent = self?.parseProgressPercent(from: progress)
+            let result: SyncResult
+
+            switch syncMode {
+            case .sync:
+                result = try await rclone.sync(
+                    source: resolvedPath,
+                    destination: remotePath,
+                    ignoredPatterns: ignoredPatterns
+                ) { [weak self] progress in
+                    Task { @MainActor in
+                        self?.syncProgress =
+                            self?.simplifyProgress(progress) ?? progress
+
+                        self?.syncProgressPercent =
+                            self?.parseProgressPercent(from: progress)
+                    }
+                }
+
+            case .bisync:
+                let mode: BisyncMode
+                switch bisyncState {
+                case .uninitialized: mode = .initial
+                case .ready: mode = .normal
+                case .needsResync: mode = .resync
+                }
+
+                result = try await rclone.bidirectionalSync(
+                    local: resolvedPath,
+                    remote: remotePath,
+                    ignoredPatterns: ignoredPatterns,
+                    mode: mode
+                ) { [weak self] progress in
+                    Task { @MainActor in
+                        self?.syncProgress =
+                            self?.simplifyProgress(progress) ?? progress
+
+                        self?.syncProgressPercent =
+                            self?.parseProgressPercent(from: progress)
+                    }
                 }
             }
             
-            folders[index].lastSyncDate = Date()
-            folders[index].lastSyncStatus = result.success ? .success : .error
-            folders[index].lastError = nil
+            if let currentIndex = folders.firstIndex(where: {$0.id == folderID}) {
+                let configurationUnchanged =
+                    folders[currentIndex].localPath == localPath &&
+                    folders[currentIndex].fullRemotePath == remotePath &&
+                    folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                    folders[currentIndex].syncMode == syncMode
+
+                if result.success && syncMode == .bisync && configurationUnchanged {
+                    folders[currentIndex].bisyncState = .ready
+                }
+
+                folders[currentIndex].lastSyncDate = Date()
+                folders[currentIndex].lastSyncStatus = result.success ? .success : .error
+                folders[currentIndex].lastError = nil
+            }
             
         } catch {
-            folders[index].lastSyncStatus = .error
-            folders[index].lastError = error.localizedDescription
+            if let currentIndex = folders.firstIndex(where: {$0.id == folderID}) {
+                if syncCancelled {
+                    folders[currentIndex].lastSyncStatus = .idle
+                    folders[currentIndex].lastError = nil
+                } else {
+                    let configurationUnchanged =
+                        folders[currentIndex].localPath == localPath &&
+                        folders[currentIndex].fullRemotePath == remotePath &&
+                        folders[currentIndex].ignoredPatterns == ignoredPatterns &&
+                        folders[currentIndex].syncMode == syncMode
+
+                    if syncMode == .bisync,
+                       configurationUnchanged,
+                       let rcloneError = error as? RcloneError,
+                       case .bisyncNeedsResync(_) = rcloneError {
+
+                        folders[currentIndex].bisyncState = .needsResync
+                    }
+
+                    folders[currentIndex].lastSyncStatus = .error
+                    folders[currentIndex].lastError = error.localizedDescription
+                }
+            }
         }
         
+        let wasCancelled = syncCancelled
         currentSyncFolder = nil
         syncProgress = ""
         syncProgressPercent = nil
+        syncCancelled = false
         isSyncing = false
-        
+
+        if !wasCancelled {
+            lastSyncDate = Date()
+        }
+
         saveFolders()
     }
     

@@ -3,14 +3,22 @@
 //  DriveSync
 //
 //  Created by saihgupr on 2024-12-11.
+//  Edited by MichasCoup on 2026-07-26.
 //
 
 import Foundation
+
+enum BisyncMode {
+    case normal
+    case initial
+    case resync
+}
 
 enum RcloneError: LocalizedError {
     case notInstalled
     case configurationFailed(String)
     case syncFailed(String)
+    case bisyncNeedsResync(String)
     case invalidRemote(String)
     
     var errorDescription: String? {
@@ -21,6 +29,8 @@ enum RcloneError: LocalizedError {
             return "Configuration failed: \(message)"
         case .syncFailed(let message):
             return "Sync failed: \(message)"
+        case .bisyncNeedsResync(let message):
+            return "Bi-Sync failed and requires a resync: \(message)"
         case .invalidRemote(let name):
             return "Invalid remote: \(name)"
         }
@@ -289,6 +299,92 @@ actor RcloneWrapper {
         }
     }
     
+    func bidirectionalSync(
+        local: String,
+        remote: String,
+        ignoredPatterns: [String] = [],
+        mode: BisyncMode,
+        dryRun: Bool = false,
+        onProgress: (@Sendable (String) -> Void)? = nil
+    ) async throws -> SyncResult {
+        
+        var args = [
+            "bisync",
+            local,
+            remote,
+            "--progress",
+            "--stats-one-line",
+            "--resilient",
+            "--recover",
+            "--max-lock", "2m",
+            "--conflict-resolve", "newer"
+        ]
+
+        if mode == .initial {
+            args.append(contentsOf: [
+                "--resync-mode", "newer"
+            ])
+        }
+
+        for pattern in ignoredPatterns {
+            let trimmed = pattern.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+            
+            if !trimmed.isEmpty && !trimmed.hasPrefix("#") {
+                args.append(contentsOf: [
+                    "--exclude",
+                    trimmed
+                ])
+            }
+        }
+
+        if dryRun {
+            args.append("--dry-run")
+        }
+
+        let startTime = Date()
+        let result: ProcessResult
+
+        if let progressHandler = onProgress {
+            result = try await runner.runWithProgress(
+                rclonePath,
+                arguments: args
+            ) { output in
+                progressHandler(output)
+            }
+        } else {
+            result = try await runner.run(
+                rclonePath,
+                arguments: args
+            )
+        }
+
+        let duration = Date().timeIntervalSince(startTime)
+
+        guard result.isSuccess else {
+            let errorMessage = result.stderr.isEmpty
+                ? result.stdout
+                : result.stderr
+
+            if result.exitCode == 7 {
+                throw RcloneError.bisyncNeedsResync(errorMessage)
+            }
+
+            throw RcloneError.syncFailed(errorMessage)
+        }
+
+        let combinedOutput = result.stdout + "\n" + result.stderr
+
+        return SyncResult(
+            success: true,
+            filesTransferred: parseFileCount(from: combinedOutput),
+            bytesTransferred: parseByteCount(from: combinedOutput),
+            duration: duration,
+            error: nil
+        )
+    }
+
     // MARK: - Helpers
     
     private func parseFileCount(from output: String) -> Int {
