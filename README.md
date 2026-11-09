@@ -102,12 +102,28 @@ Alternatively, you can go to **System Settings** → **Privacy & Security** and 
 
 ### Setting Up Google Drive
 
-First time running GoogleDriveSync? You'll need to authorize access to your Google Drive account(s).
+First time running GoogleDriveSync? You'll need to connect at least one Google Drive account.
 
-1. Click the cloud icon in your menu bar
-2. If no accounts are set up, you'll see a prompt to get started
-3. Follow the terminal-based authorization flow to connect your Google account
-4. Repeat for any additional accounts you want to add
+1. Click the cloud icon in your menu bar and choose **Connect Account**
+2. Give the account a name (e.g. `Work Drive`)
+3. Paste in your own Google OAuth **Client ID** and **Client Secret** (see below)
+4. Click **Connect Account**. Your browser opens; sign in to Google and allow access to Drive
+5. The app checks the connection with Google before showing the account as connected
+6. Repeat for any additional accounts. The next account offers to reuse the same OAuth client
+
+#### Why do I need my own OAuth client?
+
+rclone's shared Google Drive client ID is being retired during 2026, and Google already rejects it for many users (`Error 401: invalid_client`). A personal OAuth client takes about five minutes to create and is free. The **How do I get a Client ID and Secret?** panel in the Connect Account sheet links to each step, in short:
+
+1. In the [Google Cloud Console](https://console.cloud.google.com/projectcreate), create a project (or pick an existing one)
+2. [Enable the Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com) for that project
+3. Set up the [OAuth consent screen](https://console.cloud.google.com/auth/overview): user type **External**, add your own Google account as a test user
+4. Under [Audience](https://console.cloud.google.com/auth/audience), set the publishing status to **In production**. While it stays in **Testing**, Google expires sign-ins after 7 days and syncing silently stops
+5. Under [Credentials](https://console.cloud.google.com/apis/credentials), create an **OAuth client ID** of type **Desktop app** and copy the Client ID and Client Secret into the app
+
+When you sign in, Google shows an "unverified app" warning once; choose **Advanced → Go to <your project>** to continue. That is expected for a personal client.
+
+If you prefer, you can still untick **Use my own Google OAuth client** to try rclone's shared client, but expect it to stop working.
 
 ### Adding Folders to Sync
 

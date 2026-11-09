@@ -15,6 +15,8 @@
 		4A1234560006 /* SyncFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550006 /* SyncFolder.swift */; };
 		4A1234560007 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550007 /* AppSettings.swift */; };
 		4A1234560008 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550008 /* ProcessRunner.swift */; };
+		4A123456000C /* AddAccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000C /* AddAccountSheet.swift */; };
+		4A123456000D /* DriveAccountConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000D /* DriveAccountConnector.swift */; };
 		4A1234560009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A1234550009 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,8 @@
 		4A1234550006 /* SyncFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFolder.swift; sourceTree = "<group>"; };
 		4A1234550007 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		4A1234550008 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
+		4A123455000C /* AddAccountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAccountSheet.swift; sourceTree = "<group>"; };
+		4A123455000D /* DriveAccountConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveAccountConnector.swift; sourceTree = "<group>"; };
 		4A1234550009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A123455000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A123455000B /* GoogleDriveSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoogleDriveSync.entitlements; sourceTree = "<group>"; };
@@ -80,6 +84,7 @@
 			children = (
 				4A1234550002 /* MenuBarView.swift */,
 				4A1234550003 /* SettingsView.swift */,
+				4A123455000C /* AddAccountSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -89,6 +94,7 @@
 			children = (
 				4A1234550004 /* SyncManager.swift */,
 				4A1234550005 /* RcloneWrapper.swift */,
+				4A123455000D /* DriveAccountConnector.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -187,6 +193,8 @@
 				4A1234560006 /* SyncFolder.swift in Sources */,
 				4A1234560007 /* AppSettings.swift in Sources */,
 				4A1234560008 /* ProcessRunner.swift in Sources */,
+				4A123456000C /* AddAccountSheet.swift in Sources */,
+				4A123456000D /* DriveAccountConnector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

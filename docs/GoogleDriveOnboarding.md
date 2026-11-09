@@ -60,5 +60,10 @@ A "Connection log" in Settings showing the last rclone stdout/stderr for auth an
 ### 8. Longer term: an app-owned client
 If the project ever wants true zero-config, the maintainer registers a Google OAuth client, goes through the restricted-scope verification for `drive`, and ships the client ID in the app. Until then, BYO client is the honest default, and the README should say so.
 
+## Status
+
+- 2026-11-09: items 1 and 2 implemented on branch `onboarding-ideas` (`DriveAccountConnector`, `AddAccountSheet`, `RcloneWrapper.authorizeDrive/createDriveAccount/verifyRemote`). `renameRemote` was also fixed to copy every stored key, since the old version dropped `client_id`/`client_secret` and would have broken BYO accounts on rename. The exact `--non-interactive` answers that reach the terminal state are `config_refresh_token=false`, `config_change_team_drive=false`, and (shared client only) `config_shared_client_id=true`.
+- Items 3 to 8 remain open. Item 6's "token on the command line" note still applies to `createDriveAccount` and `renameRemote`.
+
 ## Suggested first PR
 Items 1 and 2 together: fields for client ID/secret, `rclone authorize` driven flow, verify step, real error surfacing. That alone turns a silent failure into a working onboarding. Worth offering upstream (saihgupr/GoogleDriveSync) since it fixes their #11.

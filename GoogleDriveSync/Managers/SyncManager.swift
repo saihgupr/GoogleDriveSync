@@ -179,11 +179,9 @@ class SyncManager: ObservableObject {
         }
     }
     
-    /// Adds a new Google Drive remote using the in-app browser flow
-    func addNewDriveRemote(name: String) async throws {
-        try await rclone.createDriveAccount(name: name)
-        await refreshRemotes()
-    }
+    /// The rclone wrapper, for flows that run several rclone commands with
+    /// their own progress state (see `DriveAccountConnector`).
+    var rcloneWrapper: RcloneWrapper { rclone }
     
     // Quick setup removed in favor of generic support
     
