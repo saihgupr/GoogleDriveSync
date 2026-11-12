@@ -91,7 +91,7 @@ struct SyncSettingsView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
                         
-                        Text("This will open a terminal window to configure rclone.")
+                        Text("This will open your browser to sign in to Google.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         

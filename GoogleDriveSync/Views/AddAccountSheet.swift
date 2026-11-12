@@ -113,7 +113,7 @@ struct AddAccountSheet: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             
-            TextField("Client Secret", text: $clientSecret)
+            SecureField("Client Secret", text: $clientSecret)
                 .textFieldStyle(.roundedBorder)
                 .font(.system(.body, design: .monospaced))
                 .autocorrectionDisabled()

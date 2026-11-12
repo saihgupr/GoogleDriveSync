@@ -57,14 +57,16 @@ final class DriveAccountConnector: ObservableObject {
                 authProcess = nil
                 
                 phase = .saving
-                try await rclone.createDriveAccount(name: name, credentials: credentials, token: token)
-                
-                phase = .verifying
                 do {
+                    try await rclone.createDriveAccount(name: name, credentials: credentials, token: token)
+                    phase = .verifying
                     let info = try await rclone.verifyRemote(name: name)
                     phase = .connected(info)
                 } catch {
-                    // Don't leave an account behind that will fail on every sync.
+                    // rclone can write a partial remote even when `config create` reports
+                    // a failure, and a remote that fails verification would fail on every
+                    // sync. Remove it on any failure after the create attempt; deleting a
+                    // remote that was never written is a no-op.
                     try? await rclone.deleteRemote(name: name)
                     throw error
                 }
