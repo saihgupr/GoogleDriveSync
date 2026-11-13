@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - The support section now says "Donate" with a heart instead of "Buy me a coffee", and the "Danger Zone" reset section was removed.
+- Buttons show a pointing hand cursor on hover, and the Donate row is clickable across its full width.
+- The Sync settings tab icon uses the same monochrome style as the other tabs.
 
 ## [1.1.3] - 2026-03-10
 

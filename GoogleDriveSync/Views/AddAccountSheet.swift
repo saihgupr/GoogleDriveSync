@@ -115,11 +115,13 @@ struct AddAccountSheet: View {
             HStack(spacing: 16) {
                 Button("Cancel") { dismiss() }
                     .keyboardShortcut(.cancelAction)
+                    .pointingHandCursor()
                 
                 Button(isReconnect ? "Reconnect" : "Connect Account") { connect() }
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canConnect)
+                    .pointingHandCursor()
             }
         }
     }
@@ -227,10 +229,12 @@ struct AddAccountSheet: View {
                         .foregroundStyle(.secondary)
                     HStack {
                         Button("Open Sign-in Page") { NSWorkspace.shared.open(url) }
+                            .pointingHandCursor()
                         Button("Copy Link") {
                             NSPasteboard.general.clearContents()
                             NSPasteboard.general.setString(url.absoluteString, forType: .string)
                         }
+                        .pointingHandCursor()
                     }
                     .controlSize(.small)
                 }
@@ -242,6 +246,7 @@ struct AddAccountSheet: View {
             
             Button("Cancel") { connector.cancel() }
                 .keyboardShortcut(.cancelAction)
+                .pointingHandCursor()
         }
     }
     
@@ -277,6 +282,7 @@ struct AddAccountSheet: View {
             Button("Done") { dismiss() }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+                .pointingHandCursor()
         }
     }
     

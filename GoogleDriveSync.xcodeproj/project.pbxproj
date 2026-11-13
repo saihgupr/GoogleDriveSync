@@ -15,6 +15,7 @@
 		4A1234560006 /* SyncFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550006 /* SyncFolder.swift */; };
 		4A1234560007 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550007 /* AppSettings.swift */; };
 		4A1234560008 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1234550008 /* ProcessRunner.swift */; };
+		4A123456000E /* ClickableCursor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000E /* ClickableCursor.swift */; };
 		4A123456000C /* AddAccountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000C /* AddAccountSheet.swift */; };
 		4A123456000D /* DriveAccountConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A123455000D /* DriveAccountConnector.swift */; };
 		4A1234560009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A1234550009 /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 		4A1234550006 /* SyncFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFolder.swift; sourceTree = "<group>"; };
 		4A1234550007 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		4A1234550008 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
+		4A123455000E /* ClickableCursor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableCursor.swift; sourceTree = "<group>"; };
 		4A123455000C /* AddAccountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAccountSheet.swift; sourceTree = "<group>"; };
 		4A123455000D /* DriveAccountConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveAccountConnector.swift; sourceTree = "<group>"; };
 		4A1234550009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				4A1234550008 /* ProcessRunner.swift */,
+				4A123455000E /* ClickableCursor.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				4A1234560006 /* SyncFolder.swift in Sources */,
 				4A1234560007 /* AppSettings.swift in Sources */,
 				4A1234560008 /* ProcessRunner.swift in Sources */,
+				4A123456000E /* ClickableCursor.swift in Sources */,
 				4A123456000C /* AddAccountSheet.swift in Sources */,
 				4A123456000D /* DriveAccountConnector.swift in Sources */,
 			);

@@ -97,6 +97,7 @@ struct MenuBarView: View {
                                 .foregroundColor(.secondary)
                         }
                         .buttonStyle(.plain)
+                        .pointingHandCursor()
                         .help("Cancel sync")
                     }
                     
@@ -171,6 +172,7 @@ struct MenuBarView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .pointingHandCursor()
                     }
                 }
                 .padding(10)
@@ -216,6 +218,7 @@ struct MenuBarView: View {
                         openSettings()
                     }
                     .controlSize(.small)
+                    .pointingHandCursor()
                 }
             }
         }
@@ -265,6 +268,7 @@ struct MenuBarView: View {
                     Image(systemName: "doc.on.doc")
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
                 .help("Copy to clipboard")
             }
             
@@ -275,6 +279,7 @@ struct MenuBarView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
+            .pointingHandCursor()
         }
         .padding(.vertical, 8)
     }
@@ -294,6 +299,7 @@ struct MenuBarView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
+            .pointingHandCursor()
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
@@ -323,8 +329,10 @@ struct MenuBarView: View {
             } label: {
                 Label("Sync All", systemImage: "arrow.triangle.2.circlepath")
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .pointingHandCursor()
             .disabled(syncManager.isSyncing || syncManager.folders.isEmpty)
             
             Button {
@@ -333,8 +341,10 @@ struct MenuBarView: View {
             } label: {
                 Label("Settings...", systemImage: "gear")
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .pointingHandCursor()
             .keyboardShortcut(",", modifiers: .command)
         }
     }
@@ -345,8 +355,10 @@ struct MenuBarView: View {
         } label: {
             Label("Quit GoogleDriveSync", systemImage: "power")
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .pointingHandCursor()
         .keyboardShortcut("q", modifiers: .command)
     }
 }
@@ -415,6 +427,7 @@ struct FolderRowView: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .frame(width: 20)
+            .pointingHandCursor()
         }
         .padding(.vertical, 4)
         .padding(.horizontal, 8)

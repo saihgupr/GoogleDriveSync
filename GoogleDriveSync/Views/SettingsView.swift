@@ -16,6 +16,7 @@ struct SettingsView: View {
             SyncSettingsView()
                 .tabItem {
                     Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                        .symbolRenderingMode(.monochrome)
                 }
                 .tag(0)
             
@@ -69,6 +70,7 @@ struct SyncSettingsView: View {
                 }
                 .disabled(syncManager.availableRemotes.isEmpty)
                 .help("Add a new sync folder")
+                .pointingHandCursor()
             }
             
             if syncManager.folders.isEmpty {
@@ -100,6 +102,7 @@ struct SyncSettingsView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
+                        .pointingHandCursor()
                         
                         Text("This will open your browser to sign in to Google.")
                             .font(.caption)
@@ -119,6 +122,7 @@ struct SyncSettingsView: View {
                             showingAddSheet = true
                         }
                         .buttonStyle(.borderedProminent)
+                        .pointingHandCursor()
                     }
                     .frame(maxHeight: .infinity)
                 }
@@ -182,6 +186,7 @@ struct FolderSettingsRow: View {
                 .frame(width: 20)
             }
             .buttonStyle(.plain)
+            .pointingHandCursor()
             .popover(isPresented: $showingErrorPopover) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Sync Failed")
@@ -258,6 +263,7 @@ struct FolderSettingsRow: View {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
                 
                 Button {
                     syncManager.removeFolder(folder)
@@ -267,6 +273,7 @@ struct FolderSettingsRow: View {
                         .foregroundStyle(.red)
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
             }
         }
         .padding(.horizontal, 12)
@@ -302,6 +309,7 @@ struct AddFolderSheet: View {
                         Button("Browse...") {
                             selectFolder()
                         }
+                        .pointingHandCursor()
                     }
                 }
                 
@@ -368,6 +376,7 @@ struct AddFolderSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
+                .pointingHandCursor()
                 
                 Spacer()
                 
@@ -392,6 +401,7 @@ struct AddFolderSheet: View {
                 }
                 .keyboardShortcut(.defaultAction)
                 .disabled(localPath.isEmpty || selectedRemote == nil)
+                .pointingHandCursor()
             }
         }
         .padding()
@@ -437,6 +447,7 @@ struct EditFolderSheet: View {
                         Button("Browse...") {
                             selectFolder()
                         }
+                        .pointingHandCursor()
                     }
                 }
                 
@@ -499,6 +510,7 @@ struct EditFolderSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
+                .pointingHandCursor()
                 
                 Spacer()
                 
@@ -521,6 +533,7 @@ struct EditFolderSheet: View {
                 }
                 .keyboardShortcut(.defaultAction)
                 .disabled(localPath.isEmpty || selectedRemote == nil)
+                .pointingHandCursor()
             }
         }
         .padding()
@@ -577,6 +590,7 @@ struct AccountsSettingsView: View {
                         Label("Connect Account", systemImage: "link")
                     }
                     .buttonStyle(.borderedProminent)
+                    .pointingHandCursor()
                     
                     Spacer()
                 }
@@ -606,6 +620,7 @@ struct AccountsSettingsView: View {
                                 reconnectRemote = remote.name
                             }
                             .controlSize(.small)
+                            .pointingHandCursor()
                             
                             Text("Sign-in expired")
                                 .font(.caption)
@@ -654,6 +669,7 @@ struct AccountsSettingsView: View {
                     } label: {
                         Label("Add Another Account", systemImage: "plus")
                     }
+                    .pointingHandCursor()
                     
                     Spacer()
                     
@@ -662,6 +678,7 @@ struct AccountsSettingsView: View {
                             await syncManager.refreshRemotes()
                         }
                     }
+                    .pointingHandCursor()
                 }
             }
         }
@@ -743,6 +760,7 @@ struct RenameAccountSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
+                .pointingHandCursor()
                 
                 Button {
                     renameAccount()
@@ -758,6 +776,7 @@ struct RenameAccountSheet: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(sanitizedName.isEmpty || sanitizedName == currentName || isProcessing)
                 .keyboardShortcut(.defaultAction)
+                .pointingHandCursor()
             }
         }
         .padding(30)
@@ -852,6 +871,7 @@ struct GeneralSettingsView: View {
                     }
                 }
                 .disabled(isCheckingForUpdates)
+                .pointingHandCursor()
                 .alert(updateAlertTitle, isPresented: $showingUpdateAlert) {
                     if let url = updateURL {
                         Button("Get Update") {
@@ -889,8 +909,10 @@ struct GeneralSettingsView: View {
                         }
                         Spacer()
                     }
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
             } header: {
                 Text("Support")
             }
