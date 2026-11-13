@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
 - **Renaming an account** copied only the token, dropping `client_id`/`client_secret`. It now copies every stored key.
 - Syncs now skip files that cannot be deleted and retry transient failures instead of aborting the whole folder.
 
+### Changed
+- The support section now says "Donate" with a heart instead of "Buy me a coffee", and the "Danger Zone" reset section was removed.
+
 ## [1.1.3] - 2026-03-10
 
 ### Added

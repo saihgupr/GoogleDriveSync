@@ -802,9 +802,6 @@ struct GeneralSettingsView: View {
     @State private var updateAlertMessage = ""
     @State private var updateURL: URL?
     
-    // Advanced / Reset state
-    @State private var showingResetConfirmation = false
-    
     var body: some View {
         Form {
             Section {
@@ -884,37 +881,24 @@ struct GeneralSettingsView: View {
                     }
                 } label: {
                     HStack {
-                        Label("Buy me a coffee", systemImage: "cup.and.saucer.fill")
+                        Label {
+                            Text("Donate")
+                        } icon: {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(.pink)
+                        }
                         Spacer()
-                        Image(systemName: "arrow.up.forward.app")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
                     }
                 }
+                .buttonStyle(.plain)
             } header: {
                 Text("Support")
-            }
-            
-            Section {
-                Button("Reset Everything...", role: .destructive) {
-                    showingResetConfirmation = true
-                }
-            } header: {
-                Text("Danger Zone")
             }
         }
         .formStyle(.grouped)
         .padding()
         .onChange(of: syncManager.settings) { _, _ in
             syncManager.saveSettings()
-        }
-        .alert("Reset All Settings?", isPresented: $showingResetConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Reset Everything", role: .destructive) {
-                syncManager.resetAllSettings()
-            }
-        } message: {
-            Text("This will remove all sync folders and account connections from the app. This cannot be undone.")
         }
     }
     
