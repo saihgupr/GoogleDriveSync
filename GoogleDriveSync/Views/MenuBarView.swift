@@ -123,9 +123,19 @@ struct MenuBarView: View {
     }
     
     private var errorBanner: some View {
-        let foldersWithErrors = syncManager.folders.filter { $0.isEnabled && $0.lastSyncStatus == .error }
+        let reconnectRemotes = syncManager.accountsNeedingReconnect.sorted()
+        let foldersWithErrors = syncManager.folders.filter { folder in
+            guard folder.isEnabled, folder.lastSyncStatus == .error else { return false }
+            
+            let isAuthFailure = RcloneError.isAuthorizationMessage(folder.lastError ?? "")
+            return !(isAuthFailure && syncManager.accountsNeedingReconnect.contains(folder.remoteName))
+        }
         
-        return Group {
+        return VStack(alignment: .leading, spacing: 6) {
+            if !reconnectRemotes.isEmpty {
+                reconnectCard(reconnectRemotes)
+            }
+            
             if !foldersWithErrors.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     ForEach(foldersWithErrors) { folder in
@@ -173,6 +183,50 @@ struct MenuBarView: View {
                 .padding(.top, 8)
             }
         }
+    }
+    
+    private func reconnectCard(_ remotes: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label {
+                Text("Google sign-in expired")
+                    .font(.system(size: 11, weight: .semibold))
+            } icon: {
+                Image(systemName: "person.crop.circle.badge.exclamationmark")
+                    .foregroundStyle(.orange)
+                    .font(.system(size: 12))
+            }
+            
+            Text("Your files are unchanged. Sign in again to resume syncing.")
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            ForEach(remotes, id: \.self) { remote in
+                HStack(spacing: 8) {
+                    Text(remote)
+                        .font(.system(size: 10))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                    
+                    Spacer(minLength: 4)
+                    
+                    Button("Reconnect...") {
+                        syncManager.requestReconnect(remote)
+                        NSApp.activate(ignoringOtherApps: true)
+                        openSettings()
+                    }
+                    .controlSize(.small)
+                }
+            }
+        }
+        .padding(10)
+        .background(Color.orange.opacity(0.12))
+        .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+        )
+        .padding(.top, 8)
     }
     
     private var statusColor: Color {

@@ -77,6 +77,41 @@ final class DriveAccountConnector: ObservableObject {
         }
     }
     
+    /// Re-authorizes an account that already exists.
+    ///
+    /// Unlike connect, a failed save or verification keeps the remote. Deleting
+    /// it would also drop every folder in the app that points at the account.
+    func reconnect(rclone: RcloneWrapper, name: String, credentials: DriveClientCredentials?) {
+        guard !isBusy else { return }
+        phase = .authorizing
+        authURL = nil
+        
+        Task {
+            do {
+                let token = try await rclone.authorizeDrive(
+                    credentials: credentials,
+                    onStart: { [weak self] handle in
+                        Task { @MainActor in self?.authProcess = handle }
+                    },
+                    onAuthURL: { [weak self] url in
+                        Task { @MainActor in self?.authURL = url }
+                    }
+                )
+                authProcess = nil
+                
+                phase = .saving
+                try await rclone.updateDriveAccount(name: name, credentials: credentials, token: token)
+                
+                phase = .verifying
+                let info = try await rclone.verifyRemote(name: name)
+                phase = .connected(info)
+            } catch {
+                authProcess = nil
+                phase = .failed(error.localizedDescription)
+            }
+        }
+    }
+    
     /// Stops a sign-in that is waiting on the browser.
     func cancel() {
         authProcess?.terminate()

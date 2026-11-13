@@ -10,6 +10,17 @@ import SwiftUI
 import AppKit
 
 struct AddAccountSheet: View {
+    enum Mode: Equatable {
+        case add
+        case reconnect(remote: String)
+    }
+    
+    let mode: Mode
+    
+    init(mode: Mode = .add) {
+        self.mode = mode
+    }
+    
     @EnvironmentObject var syncManager: SyncManager
     @Environment(\.dismiss) private var dismiss
     @StateObject private var connector = DriveAccountConnector()
@@ -19,6 +30,7 @@ struct AddAccountSheet: View {
     @State private var clientID: String = ""
     @State private var clientSecret: String = ""
     @State private var reusedExistingClient: Bool = false
+    @State private var hasStoredClient: Bool = false
     @State private var formError: String? = nil
     
     var body: some View {
@@ -36,10 +48,13 @@ struct AddAccountSheet: View {
         }
         .padding(24)
         .frame(width: 480)
-        .task { await prefillCredentials() }
+        .task { await prepare() }
         .onChange(of: connector.phase) { _, newPhase in
             switch newPhase {
             case .connected:
+                if let remote = reconnectRemote {
+                    syncManager.markAccountReconnected(remote)
+                }
                 Task { await syncManager.refreshRemotes() }
             case .failed(let message):
                 formError = message
@@ -54,22 +69,32 @@ struct AddAccountSheet: View {
     private var formView: some View {
         VStack(spacing: 20) {
             header(
-                icon: "person.crop.circle.badge.plus",
-                title: "Connect Google Drive",
-                subtitle: "Name the account, then sign in with Google in your browser."
+                icon: isReconnect ? "arrow.triangle.2.circlepath" : "person.crop.circle.badge.plus",
+                title: isReconnect ? "Reconnect Account" : "Connect Google Drive",
+                subtitle: isReconnect
+                    ? "Sign in again to refresh the stored token. Your folders stay attached."
+                    : "Name the account, then sign in with Google in your browser."
             )
             
             VStack(alignment: .leading, spacing: 12) {
                 TextField("Account Name (e.g. Work Drive)", text: $accountName)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(isReconnect)
+                
+                if isReconnect {
+                    Text("Reconnecting \(effectiveName). Nothing is deleted.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 
                 Toggle("Use my own Google OAuth client (recommended)", isOn: $useOwnClient)
+                    .disabled(hasStoredClient)
                 
                 if useOwnClient {
                     credentialFields
                 } else {
                     Label {
-                        Text("rclone's shared client is being retired during 2026 and Google may already reject it with “invalid_client”. If sign-in fails, switch this on and use your own client.")
+                        Text("rclone's shared client is being retired during 2026 and Google may already reject it with “invalid_client”. This reconnect may only work for a short time. Turn this on and use your own client to fix it for good.")
                             .font(.caption)
                     } icon: {
                         Image(systemName: "exclamationmark.triangle.fill")
@@ -91,7 +116,7 @@ struct AddAccountSheet: View {
                 Button("Cancel") { dismiss() }
                     .keyboardShortcut(.cancelAction)
                 
-                Button("Connect Account") { connect() }
+                Button(isReconnect ? "Reconnect" : "Connect Account") { connect() }
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canConnect)
@@ -118,7 +143,12 @@ struct AddAccountSheet: View {
                 .font(.system(.body, design: .monospaced))
                 .autocorrectionDisabled()
             
-            if reusedExistingClient {
+            if hasStoredClient {
+                Text("This account already uses its own OAuth client. Replace the ID and secret here to rotate it. The toggle stays on so the new token is issued to the client above.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else if reusedExistingClient {
                 Text("Reusing the OAuth client from your existing account. Each Google account you add can share the same client.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -238,7 +268,7 @@ struct AddAccountSheet: View {
                 .foregroundStyle(.green)
             
             VStack(spacing: 8) {
-                Text("“\(sanitizedName)” is connected")
+                Text("“\(effectiveName)” is \(isReconnect ? "reconnected" : "connected")")
                     .font(.title3.bold())
                 Text(info.summary)
                     .foregroundStyle(.secondary)
@@ -269,6 +299,15 @@ struct AddAccountSheet: View {
     
     // MARK: - Logic
     
+    private var isReconnect: Bool {
+        reconnectRemote != nil
+    }
+    
+    private var reconnectRemote: String? {
+        if case .reconnect(let remote) = mode { return remote }
+        return nil
+    }
+    
     private var credentials: DriveClientCredentials {
         DriveClientCredentials(clientID: clientID, clientSecret: clientSecret)
     }
@@ -280,9 +319,43 @@ struct AddAccountSheet: View {
             .replacingOccurrences(of: " ", with: "_")
     }
     
+    /// The remote name that will be written. Reconnects keep the exact existing
+    /// name, since the stored folders point at it.
+    private var effectiveName: String {
+        reconnectRemote ?? sanitizedName
+    }
+    
     private var canConnect: Bool {
-        guard !sanitizedName.isEmpty, !connector.isBusy else { return false }
+        guard !effectiveName.isEmpty, !connector.isBusy else { return false }
         return useOwnClient ? credentials.isComplete : true
+    }
+    
+    private func prepare() async {
+        if let remote = reconnectRemote {
+            accountName = remote
+            
+            // Prefer this account's own client, so the new token matches the
+            // client it was issued to. Reuse another account's client if this
+            // one was still on the shared client.
+            if let stored = await syncManager.rcloneWrapper.clientCredentials(for: remote) {
+                clientID = stored.clientID
+                clientSecret = stored.clientSecret
+                hasStoredClient = true
+                useOwnClient = true
+            } else if let existing = await connector.existingCredentials(rclone: syncManager.rcloneWrapper) {
+                clientID = existing.clientID
+                clientSecret = existing.clientSecret
+                reusedExistingClient = true
+                useOwnClient = true
+            } else {
+                // No client set up anywhere. A shared-client reconnect is the
+                // fastest way to get this person syncing again today.
+                useOwnClient = false
+            }
+            return
+        }
+        
+        await prefillCredentials()
     }
     
     private func prefillCredentials() async {
@@ -295,13 +368,22 @@ struct AddAccountSheet: View {
     
     private func connect() {
         guard canConnect else { return }
+        formError = nil
+        
+        if let remote = reconnectRemote {
+            connector.reconnect(
+                rclone: syncManager.rcloneWrapper,
+                name: remote,
+                credentials: useOwnClient ? credentials : nil
+            )
+            return
+        }
         
         if syncManager.availableRemotes.contains(where: { $0.name == sanitizedName }) {
             formError = "An account with this name already exists."
             return
         }
         
-        formError = nil
         connector.connect(
             rclone: syncManager.rcloneWrapper,
             name: sanitizedName,
