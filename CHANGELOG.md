@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.2.0] - 2026-11-13
 
 ### Added
 - **Reconnect expired Google accounts**: when Google revokes a token, the menu bar shows "Google sign-in expired" with a Reconnect button. The new token is written onto the existing remote, so folders stay attached. The Accounts tab also offers Reconnect for any account, which is how an existing shared-client account moves to a personal OAuth client.
