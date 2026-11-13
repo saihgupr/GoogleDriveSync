@@ -33,6 +33,16 @@ struct SettingsView: View {
         }
         .frame(width: 500, height: 450)
         .padding(.bottom, 20)
+        .onAppear {
+            if syncManager.requestedReconnectRemote != nil {
+                selectedTab = 1
+            }
+        }
+        .onChange(of: syncManager.requestedReconnectRemote) { _, remote in
+            if remote != nil {
+                selectedTab = 1
+            }
+        }
     }
 }
 
@@ -543,6 +553,7 @@ struct AccountsSettingsView: View {
     @State private var showingAddAccountSheet = false
     @State private var showingRenameSheet = false
     @State private var accountToRename: RcloneRemote?
+    @State private var reconnectRemote: String?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -573,8 +584,12 @@ struct AccountsSettingsView: View {
             } else {
                 List(syncManager.availableRemotes) { remote in
                     HStack {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                        Image(systemName: syncManager.accountsNeedingReconnect.contains(remote.name)
+                              ? "exclamationmark.circle.fill"
+                              : "checkmark.circle.fill")
+                            .foregroundStyle(syncManager.accountsNeedingReconnect.contains(remote.name)
+                                             ? Color.orange
+                                             : Color.green)
                         
                         VStack(alignment: .leading) {
                             Text(remote.name)
@@ -586,12 +601,31 @@ struct AccountsSettingsView: View {
                         
                         Spacer()
                         
-                        Text("Connected")
-                            .font(.caption)
-                            .foregroundStyle(.green)
+                        if syncManager.accountsNeedingReconnect.contains(remote.name) {
+                            Button("Reconnect") {
+                                reconnectRemote = remote.name
+                            }
+                            .controlSize(.small)
+                            
+                            Text("Sign-in expired")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        } else {
+                            Text("Connected")
+                                .font(.caption)
+                                .foregroundStyle(.green)
+                        }
                     }
                     .padding(.vertical, 4)
                     .contextMenu {
+                        Button {
+                            reconnectRemote = remote.name
+                        } label: {
+                            Label("Reconnect...", systemImage: "arrow.triangle.2.circlepath")
+                        }
+                        
+                        Divider()
+                        
                         Button {
                             accountToRename = remote
                             showingRenameSheet = true
@@ -642,11 +676,33 @@ struct AccountsSettingsView: View {
                     .environmentObject(syncManager)
             }
         }
+        .sheet(isPresented: Binding(
+            get: { reconnectRemote != nil },
+            set: { presented in
+                if !presented { reconnectRemote = nil }
+            }
+        )) {
+            if let remote = reconnectRemote {
+                AddAccountSheet(mode: .reconnect(remote: remote))
+                    .environmentObject(syncManager)
+            }
+        }
         .onAppear {
             Task {
                 await syncManager.refreshRemotes()
             }
+            openPendingReconnect()
         }
+        .onChange(of: syncManager.requestedReconnectRemote) { _, remote in
+            if remote != nil {
+                openPendingReconnect()
+            }
+        }
+    }
+    
+    private func openPendingReconnect() {
+        guard let remote = syncManager.takeReconnectRequest() else { return }
+        reconnectRemote = remote
     }
 }
 

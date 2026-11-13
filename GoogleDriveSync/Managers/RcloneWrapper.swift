@@ -47,6 +47,31 @@ enum RcloneError: LocalizedError {
             return "The account was created but Google Drive rejected it: \(message)"
         }
     }
+    
+    /// True when Google rejected the stored credentials, which a reconnect fixes.
+    /// Network failures, permission errors, and disk errors are not included.
+    var isAuthorizationFailure: Bool {
+        let message: String
+        switch self {
+        case .syncFailed(let text), .bisyncNeedsResync(let text),
+             .configurationFailed(let text), .authorizationFailed(let text),
+             .verificationFailed(let text):
+            message = text
+        case .notInstalled, .invalidRemote, .authorizationCancelled, .authorizationTimedOut:
+            return false
+        }
+        
+        return Self.isAuthorizationMessage(message)
+    }
+    
+    /// Matches rclone's wording for a rejected OAuth grant. Used on messages
+    /// that were stored by an older version, before the error type existed.
+    static func isAuthorizationMessage(_ message: String) -> Bool {
+        let lowercased = message.lowercased()
+        return lowercased.contains("invalid_grant")
+            || lowercased.contains("invalid_client")
+            || lowercased.contains("token has been expired or revoked")
+    }
 }
 
 /// OAuth client credentials from the user's own Google Cloud project.
@@ -302,6 +327,41 @@ actor RcloneWrapper {
             if credentials.isComplete { return credentials }
         }
         return nil
+    }
+    
+    /// Client credentials stored on one specific remote, if it has its own.
+    func clientCredentials(for remote: String) async -> DriveClientCredentials? {
+        guard let remotes = try? await dumpConfig(),
+              let section = remotes[remote],
+              let id = section["client_id"], let secret = section["client_secret"] else { return nil }
+        let credentials = DriveClientCredentials(clientID: id, clientSecret: secret)
+        return credentials.isComplete ? credentials : nil
+    }
+    
+    /// Refreshes the token on an existing remote without touching its other keys.
+    ///
+    /// `config create` would rewrite the section, so reconnect uses
+    /// `config update`. Scope, team drive, and any unrelated options survive,
+    /// and so do the folders that point at this remote.
+    func updateDriveAccount(name: String, credentials: DriveClientCredentials?, token: String) async throws {
+        var options = [
+            "token=\(token)",
+            "config_refresh_token=false",      // we just obtained a token
+            "config_change_team_drive=false"
+        ]
+        if let credentials {
+            options.append("client_id=\(credentials.clientID)")
+            options.append("client_secret=\(credentials.clientSecret)")
+        } else {
+            options.append("config_shared_client_id=true")
+        }
+        
+        let args = ["config", "update", name] + options + ["--non-interactive"]
+        let result = try await runner.run(rclonePath, arguments: args)
+        guard result.isSuccess else {
+            throw RcloneError.configurationFailed(RcloneWrapper.cleanErrorMessage(result.stderr))
+        }
+        try RcloneWrapper.checkNonInteractiveResult(result.stdout)
     }
     
     /// Rename an existing remote

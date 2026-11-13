@@ -38,6 +38,23 @@ class SyncManager: ObservableObject {
     @Published var syncProgressPercent: Double? = nil  // 0.0 to 1.0
     @Published private(set) var syncCancelled: Bool = false
     
+    /// Remotes Google rejected during the last sync. Cleared by a successful
+    /// sync, or by reconnecting the account.
+    @Published var accountsNeedingReconnect: Set<String> = [] {
+        didSet {
+            UserDefaults.standard.set(
+                Array(accountsNeedingReconnect).sorted(),
+                forKey: Self.reconnectAccountsKey
+            )
+        }
+    }
+    
+    /// Set by the menu bar so Settings can open the right sheet. Consumed by
+    /// the Accounts tab once it appears.
+    @Published var requestedReconnectRemote: String?
+    
+    private static let reconnectAccountsKey = "DriveSync.AccountsNeedingReconnect"
+    
     // MARK: - Computed Properties
     
     /// Enabled folders only (for UI display)
@@ -65,6 +82,10 @@ class SyncManager: ObservableObject {
                 return "Syncing \(folder.displayName)..."
             }
             return "Syncing..."
+        } else if accountsNeedingReconnect.count == 1 {
+            return "Google sign-in expired"
+        } else if accountsNeedingReconnect.count > 1 {
+            return "\(accountsNeedingReconnect.count) accounts need sign-in"
         } else {
             let errorCount = enabledFolders.filter { $0.lastSyncStatus == .error }.count
             if errorCount > 0 {
@@ -109,10 +130,29 @@ class SyncManager: ObservableObject {
         // Load folders
         loadFolders()
         
+        // Seed from errors stored by an older version, then restore this
+        // version's list. Drop names with no folder so an account deleted
+        // outside the app cannot leave a permanent banner.
+        var needingReconnect = Set(
+            folders
+                .filter { $0.lastSyncStatus == .error }
+                .compactMap { folder -> String? in
+                    guard let message = folder.lastError,
+                          RcloneError.isAuthorizationMessage(message) else { return nil }
+                    return folder.remoteName
+                }
+        )
+        if let saved = UserDefaults.standard.stringArray(forKey: Self.reconnectAccountsKey) {
+            needingReconnect.formUnion(saved)
+        }
+        let knownRemotes = Set(folders.map(\.remoteName))
+        accountsNeedingReconnect = needingReconnect.intersection(knownRemotes)
+        
         // Initial setup
         Task {
             await checkRcloneInstallation()
             await refreshRemotes()
+            await clearStaleReconnectState()
             scheduleSync()
             
             if settings.syncOnLaunch && !folders.isEmpty {
@@ -268,6 +308,57 @@ class SyncManager: ObservableObject {
     func removeFolder(_ folder: SyncFolder) {
         folders.removeAll { $0.id == folder.id }
         saveFolders()
+    }
+    
+    /// Clears the reconnect banner after a successful re-authorization.
+    ///
+    /// Folders are only reset to idle. The next sync proves the account works;
+    /// nothing is marked successful on the strength of a token alone.
+    func markAccountReconnected(_ remoteName: String) {
+        accountsNeedingReconnect.remove(remoteName)
+        
+        for index in folders.indices where folders[index].remoteName == remoteName {
+            if folders[index].lastSyncStatus == .error {
+                folders[index].lastSyncStatus = .idle
+                folders[index].lastError = nil
+            }
+        }
+        
+        saveFolders()
+    }
+    
+    /// Queues a reconnect request for the Accounts tab. The menu bar popover is
+    /// transient, so the sign-in sheet lives in the Settings window instead.
+    func requestReconnect(_ remote: String) {
+        requestedReconnectRemote = remote
+    }
+    
+    /// Returns and clears the queued request, if any.
+    func takeReconnectRequest() -> String? {
+        defer { requestedReconnectRemote = nil }
+        return requestedReconnectRemote
+    }
+    
+    /// Drops remotes that still authenticate, so upgrading with an error
+    /// stored by an older version cannot show a stale reconnect banner when
+    /// the token was already fixed outside the app.
+    private func clearStaleReconnectState() async {
+        guard !accountsNeedingReconnect.isEmpty else { return }
+        
+        for remote in Array(accountsNeedingReconnect) {
+            if (try? await rclone.verifyRemote(name: remote)) != nil {
+                accountsNeedingReconnect.remove(remote)
+            }
+        }
+    }
+    
+    /// Records an auth failure per account so the UI can offer one reconnect
+    /// action instead of repeating the raw rclone error on every folder.
+    private func noteSyncFailure(_ error: Error, remoteName: String) {
+        guard let rcloneError = error as? RcloneError, rcloneError.isAuthorizationFailure else {
+            return
+        }
+        accountsNeedingReconnect.insert(remoteName)
     }
     
     func updateFolder(_ folder: SyncFolder) {
@@ -428,6 +519,7 @@ class SyncManager: ObservableObject {
                 folders[currentIndex].lastSyncDate = Date()
                 folders[currentIndex].lastSyncStatus = result.success ? .success : .error
                 folders[currentIndex].lastError = nil
+                accountsNeedingReconnect.remove(folders[currentIndex].remoteName)
 
             } catch {
                 // The array may also have changed when an error
@@ -458,6 +550,7 @@ class SyncManager: ObservableObject {
 
                     folders[currentIndex].lastSyncStatus = .error
                     folders[currentIndex].lastError = error.localizedDescription
+                    noteSyncFailure(error, remoteName: folders[currentIndex].remoteName)
                 }
             }
         }
@@ -569,6 +662,7 @@ class SyncManager: ObservableObject {
                 folders[currentIndex].lastSyncDate = Date()
                 folders[currentIndex].lastSyncStatus = result.success ? .success : .error
                 folders[currentIndex].lastError = nil
+                accountsNeedingReconnect.remove(folders[currentIndex].remoteName)
             }
             
         } catch {
@@ -593,6 +687,7 @@ class SyncManager: ObservableObject {
 
                     folders[currentIndex].lastSyncStatus = .error
                     folders[currentIndex].lastError = error.localizedDescription
+                    noteSyncFailure(error, remoteName: folders[currentIndex].remoteName)
                 }
             }
         }
@@ -795,7 +890,16 @@ class SyncManager: ObservableObject {
         let content = UNMutableNotificationContent()
         content.sound = .default
         
-        if hasErrors {
+        if !accountsNeedingReconnect.isEmpty {
+            content.title = "Google sign-in expired"
+            let names = accountsNeedingReconnect.sorted().joined(separator: ", ")
+            content.body = "Reconnect \(names) to resume syncing. Your files are unchanged."
+            content.categoryIdentifier = "SYNC_ERROR"
+            
+            if #available(macOS 12.0, *) {
+                content.interruptionLevel = .timeSensitive
+            }
+        } else if hasErrors {
             content.title = "Sync Failed"
             content.body = "\(errorCount) folder(s) encountered errors"
             content.categoryIdentifier = "SYNC_ERROR"

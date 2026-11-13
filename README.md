@@ -125,6 +125,20 @@ When you sign in, Google shows an "unverified app" warning once; choose **Advanc
 
 If you prefer, you can still untick **Use my own Google OAuth client** to try rclone's shared client, but expect it to stop working.
 
+#### Sync stopped with "invalid_grant"
+
+Google revoked the token on that account. Your files are untouched; only the stored sign-in is dead. The menu bar shows **Google sign-in expired** with a **Reconnect** button. Sign in again and syncing resumes, and the folders stay attached.
+
+On an older version, run this in Terminal instead:
+
+```sh
+rclone config reconnect "you@gmail.com:"
+```
+
+Answer `y` to "Already have a token - refresh" and `y` to "Use web browser". Do not remove the account in the app to fix it, because removing it also deletes the folders attached to it.
+
+A reconnect with rclone's shared client is a stopgap. Set up your own OAuth client (above) so it does not happen again.
+
 ### Adding Folders to Sync
 
 1. Click the menu bar icon
