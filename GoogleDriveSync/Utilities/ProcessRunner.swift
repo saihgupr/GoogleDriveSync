@@ -12,14 +12,43 @@ struct ProcessResult {
     let stderr: String
     let exitCode: Int32
     let wasCancelled: Bool
+    let timedOut: Bool
     
-    var isSuccess: Bool { exitCode == 0 && !wasCancelled }
+    var isSuccess: Bool { exitCode == 0 && !wasCancelled && !timedOut }
     
-    init(stdout: String, stderr: String, exitCode: Int32, wasCancelled: Bool = false) {
+    init(stdout: String, stderr: String, exitCode: Int32, wasCancelled: Bool = false, timedOut: Bool = false) {
         self.stdout = stdout
         self.stderr = stderr
         self.exitCode = exitCode
         self.wasCancelled = wasCancelled
+        self.timedOut = timedOut
+    }
+}
+
+/// A handle to a running process that lets another task terminate it
+/// without going through the shared "current sync" slot.
+final class ProcessHandle: @unchecked Sendable {
+    private let process: Process
+    private let lock = NSLock()
+    private var terminated = false
+    
+    fileprivate init(process: Process) {
+        self.process = process
+    }
+    
+    /// True once `terminate()` has been called (by the user or a timeout).
+    var wasTerminated: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return terminated
+    }
+    
+    func terminate() {
+        lock.lock()
+        terminated = true
+        lock.unlock()
+        if process.isRunning {
+            process.terminate()
+        }
     }
 }
 
@@ -157,6 +186,106 @@ actor ProcessRunner {
                     Task {
                         await self?.clearCurrentProcess()
                     }
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    /// Run a long-lived interactive command (such as `rclone authorize`) that
+    /// streams stdout and stderr as they arrive, can be terminated through the
+    /// `ProcessHandle` passed to `onStart`, and gives up after `timeout`.
+    ///
+    /// Unlike `runWithProgress`, this does not touch the shared "current sync"
+    /// process slot, so cancelling an authorization never kills a running sync
+    /// and vice versa.
+    func runStreaming(
+        _ executablePath: String,
+        arguments: [String] = [],
+        timeout: TimeInterval? = nil,
+        onStart: (@Sendable (ProcessHandle) -> Void)? = nil,
+        onStdout: (@Sendable (String) -> Void)? = nil,
+        onStderr: (@Sendable (String) -> Void)? = nil
+    ) async throws -> ProcessResult {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: executablePath)
+        process.arguments = arguments
+        let handle = ProcessHandle(process: process)
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let stdoutPipe = Pipe()
+                let stderrPipe = Pipe()
+                process.standardOutput = stdoutPipe
+                process.standardError = stderrPipe
+                
+                let outputLock = NSLock()
+                var allStdout = ""
+                var allStderr = ""
+                
+                stdoutPipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                    let data = fileHandle.availableData
+                    guard let str = String(data: data, encoding: .utf8), !str.isEmpty else { return }
+                    outputLock.lock(); allStdout += str; outputLock.unlock()
+                    onStdout?(str)
+                }
+                
+                stderrPipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                    let data = fileHandle.availableData
+                    guard let str = String(data: data, encoding: .utf8), !str.isEmpty else { return }
+                    outputLock.lock(); allStderr += str; outputLock.unlock()
+                    onStderr?(str)
+                }
+                
+                var timeoutWork: DispatchWorkItem?
+                var timedOut = false
+                let timeoutLock = NSLock()
+                
+                do {
+                    try process.run()
+                    onStart?(handle)
+                    
+                    if let timeout {
+                        let work = DispatchWorkItem {
+                            timeoutLock.lock(); timedOut = true; timeoutLock.unlock()
+                            handle.terminate()
+                        }
+                        timeoutWork = work
+                        DispatchQueue.global().asyncAfter(deadline: .now() + timeout, execute: work)
+                    }
+                    
+                    process.waitUntilExit()
+                    timeoutWork?.cancel()
+                    
+                    stdoutPipe.fileHandleForReading.readabilityHandler = nil
+                    stderrPipe.fileHandleForReading.readabilityHandler = nil
+                    
+                    // Drain anything that arrived between the last handler call and exit.
+                    let restOut = String(data: stdoutPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+                    let restErr = String(data: stderrPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+                    
+                    outputLock.lock()
+                    allStdout += restOut
+                    allStderr += restErr
+                    let stdout = allStdout
+                    let stderr = allStderr
+                    outputLock.unlock()
+                    
+                    timeoutLock.lock(); let didTimeOut = timedOut; timeoutLock.unlock()
+                    let wasCancelled = handle.wasTerminated && !didTimeOut
+                    
+                    let result = ProcessResult(
+                        stdout: stdout.trimmingCharacters(in: .whitespacesAndNewlines),
+                        stderr: stderr.trimmingCharacters(in: .whitespacesAndNewlines),
+                        exitCode: process.terminationStatus,
+                        wasCancelled: wasCancelled,
+                        timedOut: didTimeOut
+                    )
+                    continuation.resume(returning: result)
+                } catch {
+                    timeoutWork?.cancel()
+                    stdoutPipe.fileHandleForReading.readabilityHandler = nil
+                    stderrPipe.fileHandleForReading.readabilityHandler = nil
                     continuation.resume(throwing: error)
                 }
             }
