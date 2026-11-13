@@ -16,7 +16,6 @@ struct SettingsView: View {
             SyncSettingsView()
                 .tabItem {
                     Label("Sync", systemImage: "arrow.triangle.2.circlepath")
-                        .symbolRenderingMode(.monochrome)
                 }
                 .tag(0)
             
@@ -32,6 +31,8 @@ struct SettingsView: View {
                 }
                 .tag(2)
         }
+        .focusEffectDisabled()
+        .background(ToolbarFocusSuppressor(selectedTab: selectedTab))
         .frame(width: 500, height: 450)
         .padding(.bottom, 20)
         .onAppear {
@@ -42,6 +43,119 @@ struct SettingsView: View {
         .onChange(of: syncManager.requestedReconnectRemote) { _, remote in
             if remote != nil {
                 selectedTab = 1
+            }
+        }
+    }
+}
+
+/// Suppresses AppKit's keyboard focus ring on the Settings toolbar tab buttons so
+/// switching tabs or opening Settings doesn't leave a blue outline on the Sync icon.
+private struct ToolbarFocusSuppressor: NSViewRepresentable {
+    let selectedTab: Int
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        context.coordinator.attach(to: view)
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        context.coordinator.attach(to: nsView)
+        context.coordinator.suppressToolbarFocus()
+    }
+
+    final class Coordinator: NSObject {
+        private weak var view: NSView?
+        private weak var observedWindow: NSWindow?
+        private var keyObserver: NSObjectProtocol?
+        private var firstResponderObservation: NSKeyValueObservation?
+
+        deinit {
+            tearDownObservers()
+        }
+
+        func attach(to view: NSView) {
+            self.view = view
+            DispatchQueue.main.async { [weak self] in
+                self?.observeWindowIfNeeded()
+                self?.suppressToolbarFocus()
+            }
+        }
+
+        private func observeWindowIfNeeded() {
+            guard let window = view?.window else { return }
+            guard window !== observedWindow else { return }
+
+            tearDownObservers()
+            observedWindow = window
+
+            keyObserver = NotificationCenter.default.addObserver(
+                forName: NSWindow.didBecomeKeyNotification,
+                object: window,
+                queue: .main
+            ) { [weak self] _ in
+                self?.suppressToolbarFocus()
+            }
+
+            firstResponderObservation = window.observe(\.firstResponder, options: [.new]) { [weak self] _, _ in
+                DispatchQueue.main.async {
+                    self?.suppressToolbarFocus()
+                }
+            }
+        }
+
+        private func tearDownObservers() {
+            if let keyObserver {
+                NotificationCenter.default.removeObserver(keyObserver)
+                self.keyObserver = nil
+            }
+            firstResponderObservation?.invalidate()
+            firstResponderObservation = nil
+            observedWindow = nil
+        }
+
+        func suppressToolbarFocus() {
+            guard let window = view?.window ?? observedWindow,
+                  let themeFrame = window.contentView?.superview else {
+                return
+            }
+
+            var toolbarViews: [NSView] = []
+            collectToolbarViews(in: themeFrame, into: &toolbarViews)
+
+            for toolbarView in toolbarViews {
+                disableFocusRings(in: toolbarView)
+            }
+
+            if let responderView = window.firstResponder as? NSView,
+               toolbarViews.contains(where: { responderView.isDescendant(of: $0) }) {
+                window.makeFirstResponder(nil)
+            }
+        }
+
+        private func collectToolbarViews(in root: NSView, into result: inout [NSView]) {
+            if String(describing: type(of: root)) == "NSToolbarView" {
+                result.append(root)
+                return
+            }
+            for subview in root.subviews {
+                collectToolbarViews(in: subview, into: &result)
+            }
+        }
+
+        private func disableFocusRings(in root: NSView) {
+            if root.focusRingType != .none {
+                root.focusRingType = .none
+            }
+            if let control = root as? NSControl, let cell = control.cell, cell.focusRingType != .none {
+                cell.focusRingType = .none
+            }
+            for subview in root.subviews {
+                disableFocusRings(in: subview)
             }
         }
     }
@@ -895,24 +1009,24 @@ struct GeneralSettingsView: View {
             }
             
             Section {
-                Button {
-                    if let url = URL(string: "https://ko-fi.com/saihgupr") {
-                        NSWorkspace.shared.open(url)
-                    }
-                } label: {
-                    HStack {
-                        Label {
-                            Text("Donate")
-                        } icon: {
-                            Image(systemName: "heart.fill")
-                                .foregroundStyle(.pink)
-                        }
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
+                HStack(spacing: 0) {
+                    supportButton(
+                        title: "GitHub",
+                        systemImage: "chevron.left.forwardslash.chevron.right",
+                        iconColor: .primary,
+                        urlString: "https://github.com/saihgupr/GoogleDriveSync"
+                    )
+
+                    Divider()
+                        .frame(height: 18)
+
+                    supportButton(
+                        title: "Donate",
+                        systemImage: "heart.fill",
+                        iconColor: .pink,
+                        urlString: "https://ko-fi.com/saihgupr"
+                    )
                 }
-                .buttonStyle(.plain)
-                .pointingHandCursor()
             } header: {
                 Text("Support")
             }
@@ -922,6 +1036,31 @@ struct GeneralSettingsView: View {
         .onChange(of: syncManager.settings) { _, _ in
             syncManager.saveSettings()
         }
+    }
+
+    private func supportButton(
+        title: String,
+        systemImage: String,
+        iconColor: Color,
+        urlString: String
+    ) -> some View {
+        Button {
+            if let url = URL(string: urlString) {
+                NSWorkspace.shared.open(url)
+            }
+        } label: {
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: systemImage)
+                    .foregroundStyle(iconColor)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .pointingHandCursor()
     }
     
     private func checkForUpdates() {
